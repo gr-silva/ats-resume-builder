@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ATS Resume Builder
 
-## Getting Started
+Gerador gratuito de currículos otimizados para ATS (Markdown + PDF).
 
-First, run the development server:
+Preencha os campos base na web, visualize o Markdown e baixe o PDF — **foco Geral** no MVP.
+
+Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Design Kit (dark + accent `#EF4444`).
+
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind CSS v4
+- shadcn/ui (Radix) + tokens da marca Rocha
+- Zod (validação)
+- PDFKit (PDF ATS single-column no servidor)
+- Persistência local: `localStorage` (sem login)
+
+## Como rodar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Uso
 
-## Learn More
+1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra.
+2. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
+3. Baixe **MD** ou **PDF** (foco Geral).
+4. O rascunho é salvo automaticamente no navegador.
 
-To learn more about Next.js, take a look at the following resources:
+## Arquitetura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/lib/resume/     # schema, markdown, blocks, PDF
+src/lib/focus/      # geral ativo; fullstack/ia stubs para o futuro
+src/app/api/pdf/    # POST gera PDF
+src/components/     # formulário + UI
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `applyFocus(data, focusId)` — hoje identidade para `geral`; ponto de extensão para nichos + IA.
+- Focos `fullstack` e `ia` existem como stubs e aparecem na UI como “em breve”.
 
-## Deploy on Vercel
+## Roadmap
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [ ] Seleção de nicho (Full Stack, IA, custom)
+- [ ] Revisão / reescrita STAR com IA
+- [ ] Conta + salvamento na nuvem
+- [ ] Export DOCX / textos LinkedIn
+- [ ] Deploy na Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Privacidade (MVP)
+
+Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador.
+
+## Licença
+
+MIT

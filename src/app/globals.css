@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #fafafa;
+  --elevated: #0a0a0a;
+  --surface: #111111;
+  --surface-dark: #171717;
+  --text-primary: #fafafa;
+  --text-secondary: #d4d4d4;
+  --muted: #a3a3a3;
+  --disabled: #737373;
+  --placeholder: #525252;
+  --border: #262626;
+  --accent: #ef4444;
+  --ring: #ef4444;
+  --input: #262626;
+  --card: #111111;
+  --card-foreground: #fafafa;
+  --primary: #ef4444;
+  --primary-foreground: #fafafa;
+  --secondary: #171717;
+  --secondary-foreground: #fafafa;
+  --destructive: #ef4444;
+  --muted-foreground: #a3a3a3;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-elevated: var(--elevated);
+  --color-surface: var(--surface);
+  --color-surface-dark: var(--surface-dark);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-muted: var(--muted);
+  --color-disabled: var(--disabled);
+  --color-placeholder: var(--placeholder);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-muted-foreground: var(--muted-foreground);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
