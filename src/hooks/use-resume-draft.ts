@@ -53,11 +53,13 @@ function getSnapshot(): DraftStore {
   return store;
 }
 
+const serverSnapshot: DraftStore = {
+  data: createEmptyResume(),
+  hydrated: false,
+};
+
 function getServerSnapshot(): DraftStore {
-  return {
-    data: createEmptyResume(),
-    hydrated: false,
-  };
+  return serverSnapshot;
 }
 
 function writeDraft(next: ResumeData) {
