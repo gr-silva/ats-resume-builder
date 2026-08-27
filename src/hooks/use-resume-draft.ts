@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import {
   createEmptyResume,
   type ResumeData,
@@ -8,34 +8,88 @@ import {
 
 const STORAGE_KEY = "ats-resume-builder:draft:v1";
 
-export function useResumeDraft() {
-  const [data, setData] = useState<ResumeData>(() => createEmptyResume());
-  const [hydrated, setHydrated] = useState(false);
+type DraftStore = {
+  data: ResumeData;
+  hydrated: boolean;
+};
 
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as ResumeData;
-        setData({ ...createEmptyResume(), ...parsed, focus: "geral" });
-      }
-    } catch {
-      // ignore corrupt drafts
-    }
-    setHydrated(true);
+const listeners = new Set<() => void>();
+
+let store: DraftStore = {
+  data: createEmptyResume(),
+  hydrated: false,
+};
+
+function emit() {
+  for (const listener of listeners) listener();
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function readFromLocalStorage(): ResumeData {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return createEmptyResume();
+    const parsed = JSON.parse(raw) as ResumeData;
+    return { ...createEmptyResume(), ...parsed, focus: "geral" };
+  } catch {
+    return createEmptyResume();
+  }
+}
+
+function ensureHydrated() {
+  if (store.hydrated || typeof window === "undefined") return;
+  store = {
+    data: readFromLocalStorage(),
+    hydrated: true,
+  };
+}
+
+function getSnapshot(): DraftStore {
+  ensureHydrated();
+  return store;
+}
+
+function getServerSnapshot(): DraftStore {
+  return {
+    data: createEmptyResume(),
+    hydrated: false,
+  };
+}
+
+function writeDraft(next: ResumeData) {
+  ensureHydrated();
+  store = { data: next, hydrated: true };
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // ignore quota / private mode
+  }
+  emit();
+}
+
+export function useResumeDraft() {
+  const { data, hydrated } = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
+
+  const setData = useCallback((value: ResumeData | ((prev: ResumeData) => ResumeData)) => {
+    const prev = getSnapshot().data;
+    const next = typeof value === "function" ? value(prev) : value;
+    writeDraft(next);
   }, []);
 
-  useEffect(() => {
-    if (!hydrated) return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data, hydrated]);
-
   const reset = useCallback(() => {
-    setData(createEmptyResume());
+    writeDraft(createEmptyResume());
   }, []);
 
   const loadDemo = useCallback((demo: ResumeData) => {
-    setData({ ...demo, focus: "geral" });
+    writeDraft({ ...demo, focus: "geral" });
   }, []);
 
   return { data, setData, hydrated, reset, loadDemo };

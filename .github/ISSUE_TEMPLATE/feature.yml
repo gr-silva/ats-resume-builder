@@ -1,0 +1,37 @@
+name: Feature
+description: Sugestão de melhoria ou nova funcionalidade
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Descreva o problema antes da solução. Nichos/IA exigem alinhamento — o MVP é foco Geral.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Que dor isso resolve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Como você imagina a solução?
+    validations:
+      required: true
+  - type: dropdown
+    id: mvp
+    attributes:
+      label: Cabe no MVP atual (foco Geral)?
+      options:
+        - "Sim"
+        - "Não — é nicho / IA / conta / outro roadmap"
+        - "Não tenho certeza"
+    validations:
+      required: true
+  - type: textarea
+    id: extras
+    attributes:
+      label: Alternativas consideradas / contexto
