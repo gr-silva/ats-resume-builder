@@ -53,7 +53,7 @@ src/components/     # formulário + UI
 - [ ] Revisão / reescrita STAR com IA
 - [ ] Conta + salvamento na nuvem
 - [ ] Export DOCX / textos LinkedIn
-- [ ] Deploy na Vercel
+- [x] Deploy na Vercel
 
 ## Privacidade (MVP)
 
