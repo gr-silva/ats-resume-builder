@@ -70,7 +70,10 @@ export function BuilderApp() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6">
       <header className="mb-10 max-w-2xl">
-        <p className="mb-3 text-sm font-medium text-accent">rochapontodev</p>
+        <div className="flex items-center text-sm font-medium">
+          <span>rochaponto</span>
+          <span className="text-accent">dev</span>
+        </div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           ATS Resume Builder
         </h1>
