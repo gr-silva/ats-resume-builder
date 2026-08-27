@@ -1,10 +1,21 @@
 # ATS Resume Builder
 
-Gerador gratuito de currículos otimizados para ATS (Markdown + PDF).
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml)
+
+Gerador **gratuito e open source** de currículos otimizados para ATS (Markdown + PDF).
+
+**App:** [ats-resume-builder-topaz.vercel.app](https://ats-resume-builder-topaz.vercel.app)
 
 Preencha os campos base na web, visualize o Markdown e baixe o PDF — **foco Geral** no MVP.
 
 Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Design Kit (dark + accent `#EF4444`).
+
+## Escopo do MVP
+
+- Geração ATS no **foco Geral** (Markdown + PDF)
+- Formulário na plataforma + rascunho no navegador (`localStorage`)
+- Nichos (Full Stack, IA…), revisão com IA e conta na nuvem: **roadmap** — abra uma Discussion/issue antes de PRs grandes nessas frentes
 
 ## Stack
 
@@ -24,6 +35,7 @@ npm run dev
 Abra [http://localhost:3000](http://localhost:3000).
 
 ```bash
+npm run lint
 npm run build
 npm start
 ```
@@ -34,6 +46,18 @@ npm start
 2. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
 3. Baixe **MD** ou **PDF** (foco Geral).
 4. O rascunho é salvo automaticamente no navegador.
+
+## Privacidade (MVP)
+
+Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador (`localStorage`). Sem cadastro e sem banco de dados neste MVP.
+
+## Como contribuir
+
+Contribuições são bem-vindas. Leia o [Guia de contribuição](CONTRIBUTING.md) e o [Código de conduta](CODE_OF_CONDUCT.md).
+
+A branch `main` é protegida: use **fork → PR**. Issues com label `good first issue` são um bom ponto de partida.
+
+Segurança: [SECURITY.md](SECURITY.md) — não abra issue pública para vulnerabilidades.
 
 ## Arquitetura
 
@@ -53,12 +77,8 @@ src/components/     # formulário + UI
 - [ ] Revisão / reescrita STAR com IA
 - [ ] Conta + salvamento na nuvem
 - [ ] Export DOCX / textos LinkedIn
-- [ ] Deploy na Vercel
-
-## Privacidade (MVP)
-
-Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador.
+- [x] Deploy na Vercel
 
 ## Licença
 
-MIT
+[MIT](LICENSE)

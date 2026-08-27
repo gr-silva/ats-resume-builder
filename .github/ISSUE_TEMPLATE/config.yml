@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discussions — ideias e dúvidas
+    url: https://github.com/gr-silva/ats-resume-builder/discussions
+    about: Use Discussions para brainstorm e perguntas que ainda não são issues.
+  - name: Segurança
+    url: https://github.com/gr-silva/ats-resume-builder/blob/main/SECURITY.md
+    about: Não reporte vulnerabilidades em issues públicas.
