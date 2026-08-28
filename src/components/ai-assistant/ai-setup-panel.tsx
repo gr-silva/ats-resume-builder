@@ -1,19 +1,28 @@
 "use client";
 
 import { ProviderStatus } from "@/components/ai-assistant/provider-status";
+import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { Button } from "@/components/ui/button";
-import { useAiPrepare } from "@/hooks/use-ai-prepare";
-import { useChromeAi } from "@/hooks/use-chrome-ai";
+import { needsModelPrepare } from "@/lib/ai/provider-status-label";
 import { Download, Loader2 } from "lucide-react";
 
 export function AiSetupPanel() {
-  const { availability, checking, isSupported, isReady, refresh } = useChromeAi();
-  const { preparing, progress, error, handlePrepare } = useAiPrepare(() => {
-    void refresh();
-  });
+  const {
+    availability,
+    checking,
+    isSupported,
+    isReady,
+    preparing,
+    progress,
+    prepareError,
+    handlePrepare,
+  } = useChromeAiContext();
 
-  const needsDownload =
-    isSupported && !isReady && availability === "downloadable";
+  const needsDownload = needsModelPrepare({
+    availability,
+    isReady,
+    isSupported,
+  });
 
   return (
     <div className="rounded-xl border border-border bg-elevated/80 p-4">
@@ -22,9 +31,12 @@ export function AiSetupPanel() {
         availability={availability}
         checking={checking}
         isReady={isReady}
+        preparing={preparing}
         progress={progress}
       />
-      {error ? <p className="mt-2 text-xs text-accent">{error}</p> : null}
+      {prepareError ? (
+        <p className="mt-2 text-xs text-accent">{prepareError}</p>
+      ) : null}
       {needsDownload ? (
         <Button
           type="button"

@@ -1,8 +1,8 @@
 "use client";
 
+import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { Button } from "@/components/ui/button";
-import { useAiPrepare } from "@/hooks/use-ai-prepare";
-import { useChromeAi } from "@/hooks/use-chrome-ai";
+import { needsModelPrepare } from "@/lib/ai/provider-status-label";
 import { Download, Loader2 } from "lucide-react";
 
 type Props = {
@@ -10,13 +10,17 @@ type Props = {
 };
 
 export function AiPrepareButton({ onPrepared }: Props) {
-  const { availability, isReady, refresh } = useChromeAi();
-  const { preparing, handlePrepare } = useAiPrepare(() => {
-    void refresh();
-    onPrepared?.();
-  });
+  const {
+    availability,
+    isReady,
+    isSupported,
+    preparing,
+    handlePrepare,
+  } = useChromeAiContext();
 
-  if (isReady || availability !== "downloadable") return null;
+  if (!needsModelPrepare({ availability, isReady, isSupported })) {
+    return null;
+  }
 
   return (
     <Button
@@ -24,7 +28,12 @@ export function AiPrepareButton({ onPrepared }: Props) {
       variant="outline"
       size="sm"
       disabled={preparing}
-      onClick={() => void handlePrepare()}
+      onClick={() => {
+        void (async () => {
+          await handlePrepare();
+          onPrepared?.();
+        })();
+      }}
     >
       {preparing ? (
         <>

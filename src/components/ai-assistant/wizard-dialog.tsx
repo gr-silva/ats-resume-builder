@@ -2,18 +2,17 @@
 
 import { AiConsentCheckbox } from "@/components/ai-assistant/ai-consent-checkbox";
 import { AiPrepareButton } from "@/components/ai-assistant/ai-prepare-button";
+import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { ProviderStatus } from "@/components/ai-assistant/provider-status";
 import { ResumePreview } from "@/components/ai-assistant/resume-preview";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useChromeAi } from "@/hooks/use-chrome-ai";
 import { hasAiConsent } from "@/lib/ai/consent";
 import { mergeAiIntoResume } from "@/lib/ai/merge-resume";
 import { buildWizardPrompt } from "@/lib/ai/prompts";
-import { getChromeAiProvider } from "@/lib/ai/providers";
-import type { AiResumeOutput, GenerateProgress, WizardAnswers } from "@/lib/ai/types";
+import type { AiResumeOutput, WizardAnswers } from "@/lib/ai/types";
 import type { ResumeData } from "@/lib/resume/schema";
 import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -78,13 +77,21 @@ export function WizardDialog({
   currentData,
   onApply,
 }: Props) {
-  const { availability, checking, isSupported, isReady, refresh } = useChromeAi();
+  const {
+    availability,
+    checking,
+    isSupported,
+    isReady,
+    preparing,
+    progress,
+    refresh,
+    generateResume,
+  } = useChromeAiContext();
   const [consent, setConsent] = useState(() => hasAiConsent());
   const [step, setStep] = useState<WizardStep>("intro");
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<WizardAnswers>(EMPTY_ANSWERS);
   const [generating, setGenerating] = useState(false);
-  const [progress, setProgress] = useState<GenerateProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<AiResumeOutput | null>(null);
 
@@ -104,19 +111,12 @@ export function WizardDialog({
   const canProceedQuestion = answers[currentQuestion.key].trim().length > 0;
 
   async function handleGenerate() {
-    const provider = getChromeAiProvider();
-    if (!provider) {
-      setError("IA do Chrome indisponível neste navegador.");
-      return;
-    }
-
     setGenerating(true);
     setError(null);
-    setProgress(null);
 
     try {
       const prompt = buildWizardPrompt(answers);
-      const result = await provider.generateResume(prompt, setProgress);
+      const result = await generateResume(prompt);
       setPreview(result);
       setStep("review");
     } catch (err) {
@@ -125,7 +125,6 @@ export function WizardDialog({
       );
     } finally {
       setGenerating(false);
-      setProgress(null);
     }
   }
 
@@ -148,6 +147,7 @@ export function WizardDialog({
           availability={availability}
           checking={checking}
           isReady={isReady}
+          preparing={preparing}
           progress={progress}
         />
 

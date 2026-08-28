@@ -2,12 +2,15 @@
 
 import { ImportDialog } from "@/components/ai-assistant/import-dialog";
 import { AiSetupPanel } from "@/components/ai-assistant/ai-setup-panel";
+import {
+  ChromeAiProvider,
+  useChromeAiContext,
+} from "@/components/ai-assistant/chrome-ai-provider";
 import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ResumeForm } from "@/components/resume-form";
-import { useChromeAi } from "@/hooks/use-chrome-ai";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
@@ -16,14 +19,20 @@ import { Download, Eraser, FileText, Sparkles, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export function BuilderApp() {
+  return (
+    <ChromeAiProvider>
+      <BuilderAppContent />
+    </ChromeAiProvider>
+  );
+}
+
+function BuilderAppContent() {
   const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
-  const { isSupported, checking } = useChromeAi();
+  const { isSupported, checking } = useChromeAiContext();
   const [pdfLoading, setPdfLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
-  const [wizardSession, setWizardSession] = useState(0);
-  const [importSession, setImportSession] = useState(0);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
@@ -120,10 +129,7 @@ export function BuilderApp() {
                 ? "Preencher com assistente IA"
                 : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
             }
-            onClick={() => {
-              setWizardSession((s) => s + 1);
-              setWizardOpen(true);
-            }}
+            onClick={() => setWizardOpen(true)}
           >
             <Sparkles className="size-4" /> Assistente IA
           </Button>
@@ -136,10 +142,7 @@ export function BuilderApp() {
                 ? "Importar currículo com IA"
                 : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
             }
-            onClick={() => {
-              setImportSession((s) => s + 1);
-              setImportOpen(true);
-            }}
+            onClick={() => setImportOpen(true)}
           >
             <Upload className="size-4" /> Importar
           </Button>
@@ -206,20 +209,22 @@ export function BuilderApp() {
         </aside>
       </div>
 
-      <WizardDialog
-        key={`wizard-${wizardSession}`}
-        open={wizardOpen}
-        onOpenChange={setWizardOpen}
-        currentData={data}
-        onApply={setData}
-      />
-      <ImportDialog
-        key={`import-${importSession}`}
-        open={importOpen}
-        onOpenChange={setImportOpen}
-        currentData={data}
-        onApply={setData}
-      />
+      {wizardOpen ? (
+        <WizardDialog
+          open={wizardOpen}
+          onOpenChange={setWizardOpen}
+          currentData={data}
+          onApply={setData}
+        />
+      ) : null}
+      {importOpen ? (
+        <ImportDialog
+          open={importOpen}
+          onOpenChange={setImportOpen}
+          currentData={data}
+          onApply={setData}
+        />
+      ) : null}
     </div>
   );
 }

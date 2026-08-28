@@ -1,6 +1,10 @@
 "use client";
 
 import { AiDownloadProgress } from "@/components/ai-assistant/ai-download-progress";
+import {
+  getProviderStatusLabel,
+  isProviderStatusOk,
+} from "@/lib/ai/provider-status-label";
 import type { AiAvailability, GenerateProgress } from "@/lib/ai/types";
 import { Loader2 } from "lucide-react";
 
@@ -8,22 +12,17 @@ type Props = {
   availability: AiAvailability;
   checking: boolean;
   isReady?: boolean;
+  preparing?: boolean;
   progress?: GenerateProgress | null;
   showTroubleshooting?: boolean;
-};
-
-const AVAILABILITY_LABELS: Record<AiAvailability, string> = {
-  available: "IA do Chrome pronta",
-  downloadable: "Modelo disponível para download",
-  downloading: "Baixando modelo…",
-  unavailable: "IA do Chrome indisponível",
 };
 
 export function ProviderStatus({
   availability,
   checking,
   isReady = false,
-  progress,
+  preparing = false,
+  progress = null,
   showTroubleshooting = true,
 }: Props) {
   if (checking) {
@@ -35,11 +34,16 @@ export function ProviderStatus({
     );
   }
 
-  const label = isReady
-    ? "IA do Chrome pronta"
-    : AVAILABILITY_LABELS[availability];
-  const isOk =
-    isReady || availability === "available" || availability === "downloadable";
+  const label = getProviderStatusLabel({
+    availability,
+    isReady,
+    preparing,
+    progress,
+  });
+  const isOk = isProviderStatusOk({ availability, isReady });
+  const showDownloadBar =
+    (preparing || progress?.phase === "downloading") &&
+    progress?.downloadPercent !== undefined;
 
   return (
     <div
@@ -50,10 +54,9 @@ export function ProviderStatus({
       }`}
     >
       <p>{label}</p>
-      {progress?.phase === "downloading" &&
-      progress.downloadPercent !== undefined ? (
+      {showDownloadBar ? (
         <div className="mt-3">
-          <AiDownloadProgress percent={progress.downloadPercent} />
+          <AiDownloadProgress percent={progress!.downloadPercent!} />
         </div>
       ) : null}
       {progress?.phase === "generating" ? (
