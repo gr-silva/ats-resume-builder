@@ -205,14 +205,14 @@ export function BuilderApp() {
       </div>
 
       <WizardDialog
-        key={wizardSession}
+        key={`wizard-${wizardSession}`}
         open={wizardOpen}
         onOpenChange={setWizardOpen}
         currentData={data}
         onApply={setData}
       />
       <ImportDialog
-        key={importSession}
+        key={`import-${importSession}`}
         open={importOpen}
         onOpenChange={setImportOpen}
         currentData={data}
