@@ -1,20 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { ImportDialog } from "@/components/ai-assistant/import-dialog";
+import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ResumeForm } from "@/components/resume-form";
+import { useChromeAi } from "@/hooks/use-chrome-ai";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
-import { Download, Eraser, FileText, Sparkles } from "lucide-react";
+import { Download, Eraser, FileText, Sparkles, Upload } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export function BuilderApp() {
   const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
+  const { isSupported, checking } = useChromeAi();
   const [pdfLoading, setPdfLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [wizardSession, setWizardSession] = useState(0);
+  const [importSession, setImportSession] = useState(0);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
@@ -85,13 +93,54 @@ export function BuilderApp() {
           <Badge className="border-accent/40 bg-accent/10 text-accent">
             Foco: {FOCUS_LABELS.geral}
           </Badge>
-          <Badge title="Full Stack, IA e revisão com IA — em breve">
-            Full Stack / IA — em breve
+          <Badge
+            title={
+              isSupported
+                ? "Assistente IA local via Chrome (Gemini Nano)"
+                : "Requer Chrome desktop 148+ com hardware compatível"
+            }
+          >
+            Assistente IA {isSupported ? "(Chrome)" : "— indisponível"}
+          </Badge>
+          <Badge title="Nichos Full Stack e IA — em breve">
+            Full Stack — em breve
           </Badge>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
           <Button asChild>
             <a href="#editor">Começar</a>
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={!isSupported || checking}
+            title={
+              isSupported
+                ? "Preencher com assistente IA"
+                : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
+            }
+            onClick={() => {
+              setWizardSession((s) => s + 1);
+              setWizardOpen(true);
+            }}
+          >
+            <Sparkles className="size-4" /> Assistente IA
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={!isSupported || checking}
+            title={
+              isSupported
+                ? "Importar currículo com IA"
+                : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
+            }
+            onClick={() => {
+              setImportSession((s) => s + 1);
+              setImportOpen(true);
+            }}
+          >
+            <Upload className="size-4" /> Importar
           </Button>
           <Button
             type="button"
@@ -148,11 +197,27 @@ export function BuilderApp() {
             </pre>
           </div>
           <p className="text-xs text-muted">
-            Rascunho salvo automaticamente no navegador (localStorage). Nada é
-            enviado a um banco de dados neste MVP.
+            Rascunho salvo automaticamente no navegador (localStorage). O
+            assistente IA processa dados localmente no Chrome (Gemini Nano) —
+            nada é enviado a servidores externos nem a banco de dados.
           </p>
         </aside>
       </div>
+
+      <WizardDialog
+        key={wizardSession}
+        open={wizardOpen}
+        onOpenChange={setWizardOpen}
+        currentData={data}
+        onApply={setData}
+      />
+      <ImportDialog
+        key={importSession}
+        open={importOpen}
+        onOpenChange={setImportOpen}
+        currentData={data}
+        onApply={setData}
+      />
     </div>
   );
 }

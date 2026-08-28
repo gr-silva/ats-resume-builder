@@ -15,7 +15,25 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 
 - Geração ATS no **foco Geral** (Markdown + PDF)
 - Formulário na plataforma + rascunho no navegador (`localStorage`)
-- Nichos (Full Stack, IA…), revisão com IA e conta na nuvem: **roadmap** — abra uma Discussion/issue antes de PRs grandes nessas frentes
+- **Assistente IA** (Chrome Prompt API / Gemini Nano on-device): wizard de perguntas e importação por texto
+- Nichos (Full Stack, IA…), revisão com IA na nuvem e conta na nuvem: **roadmap**
+
+## Assistente IA (Chrome)
+
+O assistente usa a [Prompt API do Chrome](https://developer.chrome.com/docs/ai/prompt-api) com **Gemini Nano** — processamento **100% local**, sem API key e sem envio de dados a servidores externos.
+
+**Requisitos:**
+
+- Chrome desktop **148+** (Windows, macOS, Linux ou Chromebook Plus)
+- ~16 GB RAM, GPU com 4+ GB VRAM, ~22 GB de espaço livre
+- Primeiro uso pode baixar o modelo (~2–4 GB)
+
+**Funcionalidades:**
+
+1. **Assistente IA** — responda perguntas curtas e preencha o formulário automaticamente
+2. **Importar** — cole o texto do currículo (ou carregue `.txt`/`.md`) e extraia os campos
+
+**Compatibilidade:** Firefox, Safari e mobile não suportam a Prompt API — os botões de IA ficam desabilitados; o preenchimento manual continua disponível.
 
 ## Stack
 
@@ -43,13 +61,14 @@ npm start
 ## Uso
 
 1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra.
-2. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
-3. Baixe **MD** ou **PDF** (foco Geral).
-4. O rascunho é salvo automaticamente no navegador.
+2. Use **Assistente IA** (Chrome) para acelerar o preenchimento ou **Importar** para colar um currículo existente.
+3. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
+4. Baixe **MD** ou **PDF** (foco Geral).
+5. O rascunho é salvo automaticamente no navegador.
 
 ## Privacidade (MVP)
 
-Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador (`localStorage`). Sem cadastro e sem banco de dados neste MVP.
+Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador (`localStorage`). O assistente IA processa dados **localmente no Chrome** (Gemini Nano) — nada é enviado a APIs externas. Sem cadastro e sem banco de dados neste MVP.
 
 ## Como contribuir
 
@@ -63,9 +82,10 @@ Segurança: [SECURITY.md](SECURITY.md) — não abra issue pública para vulnera
 
 ```
 src/lib/resume/     # schema, markdown, blocks, PDF
+src/lib/ai/         # Chrome Prompt API, prompts, merge
 src/lib/focus/      # geral ativo; fullstack/ia stubs para o futuro
 src/app/api/pdf/    # POST gera PDF
-src/components/     # formulário + UI
+src/components/     # formulário + assistente IA + UI
 ```
 
 - `applyFocus(data, focusId)` — hoje identidade para `geral`; ponto de extensão para nichos + IA.
@@ -74,10 +94,11 @@ src/components/     # formulário + UI
 ## Roadmap
 
 - [ ] Seleção de nicho (Full Stack, IA, custom)
-- [ ] Revisão / reescrita STAR com IA
+- [ ] Revisão / reescrita STAR com IA (nuvem, com abordagem segura)
 - [ ] Conta + salvamento na nuvem
 - [ ] Export DOCX / textos LinkedIn
 - [x] Deploy na Vercel
+- [x] Assistente IA local (Chrome Prompt API)
 
 ## Licença
 

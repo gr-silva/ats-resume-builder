@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/dom-chromium-ai": "^0.0.17",
     "@types/node": "^26",
     "@types/pdfkit": "^0.13.9",
     "@types/react": "^19",
