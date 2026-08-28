@@ -55,7 +55,9 @@ export class AiParseError extends Error {
 
 export interface AiProvider {
   readonly id: "chrome-prompt";
+  isReady(): boolean;
   checkAvailability(): Promise<AiAvailability>;
+  prepare(onProgress?: (progress: GenerateProgress) => void): Promise<void>;
   generateResume(
     prompt: string,
     onProgress?: (progress: GenerateProgress) => void

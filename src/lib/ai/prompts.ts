@@ -42,11 +42,17 @@ ${resumeText}
 
 export function buildRetryPrompt(
   originalPrompt: string,
-  invalidResponse: string
+  invalidResponse: string,
+  validationError?: string
 ): string {
+  const errorLine = validationError
+    ? `Erro de validação: ${validationError}`
+    : "A resposta anterior não era JSON válido ou não seguia o schema.";
+
   return `${originalPrompt}
 
-A resposta anterior não era JSON válido ou não seguia o schema. Corrija e retorne apenas JSON válido.
+${errorLine}
+Corrija e retorne apenas JSON válido, sem markdown nem texto extra.
 
 Resposta inválida:
 ${invalidResponse.slice(0, 2000)}`;

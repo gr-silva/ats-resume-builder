@@ -1,6 +1,7 @@
 "use client";
 
 import { ImportDialog } from "@/components/ai-assistant/import-dialog";
+import { AiSetupPanel } from "@/components/ai-assistant/ai-setup-panel";
 import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -196,6 +197,7 @@ export function BuilderApp() {
               {markdown.trim() || "Preencha o formulário para ver o preview."}
             </pre>
           </div>
+          <AiSetupPanel />
           <p className="text-xs text-muted">
             Rascunho salvo automaticamente no navegador (localStorage). O
             assistente IA processa dados localmente no Chrome (Gemini Nano) —

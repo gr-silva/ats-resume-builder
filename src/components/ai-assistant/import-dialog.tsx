@@ -1,6 +1,7 @@
 "use client";
 
 import { AiConsentCheckbox } from "@/components/ai-assistant/ai-consent-checkbox";
+import { AiPrepareButton } from "@/components/ai-assistant/ai-prepare-button";
 import { ProviderStatus } from "@/components/ai-assistant/provider-status";
 import { ResumePreview } from "@/components/ai-assistant/resume-preview";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ export function ImportDialog({
   currentData,
   onApply,
 }: Props) {
-  const { availability, checking, isSupported, refresh } = useChromeAi();
+  const { availability, checking, isSupported, isReady, refresh } = useChromeAi();
   const [consent, setConsent] = useState(() => hasAiConsent());
   const [step, setStep] = useState<ImportStep>("input");
   const [text, setText] = useState("");
@@ -120,6 +121,7 @@ export function ImportDialog({
         <ProviderStatus
           availability={availability}
           checking={checking}
+          isReady={isReady}
           progress={progress}
         />
 
@@ -161,7 +163,8 @@ export function ImportDialog({
               </Button>
             </div>
             {error ? <p className="text-sm text-accent">{error}</p> : null}
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-wrap justify-end gap-2">
+              <AiPrepareButton onPrepared={() => void refresh()} />
               <Button
                 type="button"
                 variant="outline"

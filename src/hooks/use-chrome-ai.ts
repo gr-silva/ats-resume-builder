@@ -7,11 +7,13 @@ import { useCallback, useEffect, useState } from "react";
 export function useChromeAi() {
   const [availability, setAvailability] = useState<AiAvailability>("unavailable");
   const [checking, setChecking] = useState(true);
+  const [isReady, setIsReady] = useState(false);
 
-  const refresh = useCallback(async () => {
+  const syncFromProvider = useCallback(async () => {
     const provider = getChromeAiProvider();
     if (!provider) {
       setAvailability("unavailable");
+      setIsReady(false);
       setChecking(false);
       return;
     }
@@ -19,8 +21,10 @@ export function useChromeAi() {
     try {
       const status = await provider.checkAvailability();
       setAvailability(status);
+      setIsReady(provider.isReady());
     } catch {
       setAvailability("unavailable");
+      setIsReady(false);
     } finally {
       setChecking(false);
     }
@@ -33,15 +37,22 @@ export function useChromeAi() {
       if (!provider) {
         if (!cancelled) {
           setAvailability("unavailable");
+          setIsReady(false);
           setChecking(false);
         }
         return;
       }
       try {
         const status = await provider.checkAvailability();
-        if (!cancelled) setAvailability(status);
+        if (!cancelled) {
+          setAvailability(status);
+          setIsReady(provider.isReady());
+        }
       } catch {
-        if (!cancelled) setAvailability("unavailable");
+        if (!cancelled) {
+          setAvailability("unavailable");
+          setIsReady(false);
+        }
       } finally {
         if (!cancelled) setChecking(false);
       }
@@ -53,5 +64,11 @@ export function useChromeAi() {
 
   const isSupported = availability !== "unavailable";
 
-  return { availability, checking, isSupported, refresh };
+  return {
+    availability,
+    checking,
+    isSupported,
+    isReady,
+    refresh: syncFromProvider,
+  };
 }

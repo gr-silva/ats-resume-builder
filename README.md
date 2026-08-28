@@ -54,9 +54,17 @@ Abra [http://localhost:3000](http://localhost:3000).
 
 ```bash
 npm run lint
+npm run test
 npm run build
 npm start
 ```
+
+### Troubleshooting da IA (Chrome)
+
+- [Documentação da Prompt API](https://developer.chrome.com/docs/ai/prompt-api)
+- Verifique o modelo em `chrome://on-device-internals`
+- Em versões anteriores ao Chrome 148, pode ser necessário habilitar flags experimentais em `chrome://flags` (ex.: *Prompt API for Gemini Nano*)
+- Use **Preparar IA** no painel lateral ou nos dialogs para baixar o modelo antes de gerar
 
 ## Uso
 
