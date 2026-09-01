@@ -18,6 +18,9 @@ describe("STAR prompts", () => {
     expect(prompt).toContain("Demo Corp");
     expect(prompt).toContain("Fiz automação");
     expect(prompt).toContain("bulletIndex 0");
+    expect(prompt).toContain('"issue"');
+    expect(prompt).toContain('"idea"');
+    expect(prompt).toContain("SEM números ou percentuais fictícios");
     expect(prompt).toContain("NÃO invente");
   });
 

@@ -31,7 +31,14 @@ const STAR_BULLET_ANALYSIS_ITEM_SCHEMA = {
     result: STAR_COMPONENT_ANALYSIS_SCHEMA,
     suggestions: {
       type: "array",
-      items: { type: "string" },
+      items: {
+        type: "object",
+        properties: {
+          issue: { type: "string" },
+          idea: { type: "string" },
+        },
+        required: ["issue", "idea"],
+      },
     },
     questions: {
       type: "array",
