@@ -32,6 +32,7 @@ O assistente usa a [Prompt API do Chrome](https://developer.chrome.com/docs/ai/p
 
 1. **Assistente IA** — responda perguntas curtas e preencha o formulário automaticamente
 2. **Importar** — cole o texto do currículo (ou carregue `.txt`/`.md`) e extraia os campos
+3. **Revisar STAR** — analise e reescreva bullets no formato STAR comprimido; se faltar Situação, Tarefa, Ação ou Resultado, a IA faz perguntas antes de reescrever (por bullet ou por experiência inteira)
 
 **Compatibilidade:** Firefox, Safari e mobile não suportam a Prompt API — os botões de IA ficam desabilitados; o preenchimento manual continua disponível.
 
@@ -70,9 +71,10 @@ npm start
 
 1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra.
 2. Use **Assistente IA** (Chrome) para acelerar o preenchimento ou **Importar** para colar um currículo existente.
-3. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
-4. Baixe **MD** ou **PDF** (foco Geral).
-5. O rascunho é salvo automaticamente no navegador.
+3. Na aba Experiência, use **Revisar STAR** em cada bullet ou **Revisar STAR (todos)** no bloco da experiência.
+4. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
+5. Baixe **MD** ou **PDF** (foco Geral).
+6. O rascunho é salvo automaticamente no navegador.
 
 ## Privacidade (MVP)
 
@@ -102,7 +104,7 @@ src/components/     # formulário + assistente IA + UI
 ## Roadmap
 
 - [ ] Seleção de nicho (Full Stack, IA, custom)
-- [ ] Revisão / reescrita STAR com IA (nuvem, com abordagem segura)
+- [x] Revisão / reescrita STAR com IA (Chrome local, com perguntas quando faltar info)
 - [ ] Conta + salvamento na nuvem
 - [ ] Export DOCX / textos LinkedIn
 - [x] Deploy na Vercel

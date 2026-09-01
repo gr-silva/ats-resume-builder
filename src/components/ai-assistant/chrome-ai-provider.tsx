@@ -31,6 +31,11 @@ type ChromeAiContextValue = {
   refresh: () => Promise<void>;
   handlePrepare: () => Promise<void>;
   generateResume: (prompt: string) => Promise<AiResumeOutput>;
+  generateJson: <T>(
+    prompt: string,
+    schema: Record<string, unknown>,
+    parse: (raw: unknown) => T | null
+  ) => Promise<T>;
   clearPrepareError: () => void;
 };
 
@@ -148,6 +153,37 @@ export function ChromeAiProvider({ children }: { children: ReactNode }) {
     [refresh]
   );
 
+  const generateJson = useCallback(
+    async <T,>(
+      prompt: string,
+      schema: Record<string, unknown>,
+      parse: (raw: unknown) => T | null
+    ): Promise<T> => {
+      const provider = getChromeAiProvider();
+      if (!provider) {
+        throw new Error("IA do Chrome indisponível neste navegador.");
+      }
+
+      setActiveOperation("generate");
+      setProgress(null);
+
+      try {
+        const result = await provider.generateJson(
+          prompt,
+          schema,
+          parse,
+          setProgress
+        );
+        await refresh();
+        return result;
+      } finally {
+        setActiveOperation(null);
+        setProgress(null);
+      }
+    },
+    [refresh]
+  );
+
   const isSupported = availability !== "unavailable";
 
   const value = useMemo<ChromeAiContextValue>(
@@ -164,6 +200,7 @@ export function ChromeAiProvider({ children }: { children: ReactNode }) {
       refresh,
       handlePrepare,
       generateResume,
+      generateJson,
       clearPrepareError: () => setPrepareError(null),
     }),
     [
@@ -178,6 +215,7 @@ export function ChromeAiProvider({ children }: { children: ReactNode }) {
       refresh,
       handlePrepare,
       generateResume,
+      generateJson,
     ]
   );
 

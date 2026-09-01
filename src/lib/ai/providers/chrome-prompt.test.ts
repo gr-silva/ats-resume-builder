@@ -63,4 +63,39 @@ describe("chromePromptProvider", () => {
     expect(result.name).toBe("Test User");
     expect(mockPrompt).toHaveBeenCalledTimes(2);
   });
+
+  it("retries generateJson when first STAR response is invalid", async () => {
+    mockPrompt
+      .mockResolvedValueOnce("not-json")
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          rewrites: [
+            {
+              bulletIndex: 0,
+              original: "Fiz X",
+              rewritten: "Desenvolvi X com impacto mensurável.",
+              breakdown: {
+                situation: "Contexto",
+                task: "Objetivo",
+                action: "Implementação",
+                result: "Impacto",
+              },
+            },
+          ],
+        })
+      );
+
+    const result = await chromePromptProvider.generateJson(
+      "reescreva star",
+      { type: "object" },
+      (raw) => {
+        if (!raw || typeof raw !== "object") return null;
+        const o = raw as { rewrites?: unknown[] };
+        return Array.isArray(o.rewrites) ? o.rewrites : null;
+      }
+    );
+
+    expect(result).toHaveLength(1);
+    expect(mockPrompt).toHaveBeenCalledTimes(2);
+  });
 });

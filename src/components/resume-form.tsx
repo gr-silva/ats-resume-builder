@@ -1,5 +1,7 @@
 "use client";
 
+import { StarReviewDialog } from "@/components/ai-assistant/star-review-dialog";
+import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,9 +15,17 @@ import {
 import { Separator } from "@/components/ui/separator";
 import {
   cryptoRandomId,
+  type Experience,
   type ResumeData,
 } from "@/lib/resume/schema";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Trash2 } from "lucide-react";
+import { useState } from "react";
+
+type StarReviewTarget = {
+  expIndex: number;
+  mode: "bullet" | "experience";
+  bulletIndex?: number;
+};
 
 type Props = {
   data: ResumeData;
@@ -38,11 +48,24 @@ function Field({
 }
 
 export function ResumeForm({ data, onChange }: Props) {
+  const { isSupported, checking } = useChromeAiContext();
+  const [starReview, setStarReview] = useState<StarReviewTarget | null>(null);
+
   const update = <K extends keyof ResumeData>(key: K, value: ResumeData[K]) => {
     onChange({ ...data, [key]: value });
   };
 
+  function applyExperienceUpdate(expIndex: number, experience: Experience) {
+    const next = [...data.experiences];
+    next[expIndex] = experience;
+    update("experiences", next);
+  }
+
+  const starReviewExperience =
+    starReview !== null ? data.experiences[starReview.expIndex] : null;
+
   return (
+    <>
     <Tabs defaultValue="dados" className="w-full">
       <TabsList>
         <TabsTrigger value="dados">Dados</TabsTrigger>
@@ -196,23 +219,41 @@ export function ResumeForm({ data, onChange }: Props) {
             key={exp.id}
             className="space-y-3 rounded-lg border border-border bg-elevated p-4"
           >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium text-text-secondary">
                 Experiência {expIndex + 1}
               </span>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() =>
-                  update(
-                    "experiences",
-                    data.experiences.filter((e) => e.id !== exp.id)
-                  )
-                }
-              >
-                <Trash2 className="size-4" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={!isSupported || checking}
+                  title={
+                    isSupported
+                      ? "Revisar STAR de todos os bullets"
+                      : "Requer Chrome desktop 148+ com IA local"
+                  }
+                  onClick={() =>
+                    setStarReview({ expIndex, mode: "experience" })
+                  }
+                >
+                  <Sparkles className="size-4" /> Revisar STAR (todos)
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() =>
+                    update(
+                      "experiences",
+                      data.experiences.filter((e) => e.id !== exp.id)
+                    )
+                  }
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Cargo">
@@ -255,7 +296,7 @@ export function ResumeForm({ data, onChange }: Props) {
               {exp.bullets.map((bullet, bulletIndex) => (
                 <div key={bulletIndex} className="flex gap-2">
                   <Textarea
-                    className="min-h-[72px]"
+                    className="min-h-[72px] flex-1"
                     value={bullet}
                     onChange={(e) => {
                       const next = [...data.experiences];
@@ -266,22 +307,45 @@ export function ResumeForm({ data, onChange }: Props) {
                     }}
                     placeholder="Desenvolvi X com Y, resultando em Z (número)."
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    aria-label="Remover bullet"
-                    onClick={() => {
-                      const next = [...data.experiences];
-                      next[expIndex] = {
-                        ...exp,
-                        bullets: exp.bullets.filter((_, i) => i !== bulletIndex),
-                      };
-                      update("experiences", next);
-                    }}
-                  >
-                    <Trash2 className="size-4" />
-                  </Button>
+                  <div className="flex flex-col gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={!isSupported || checking || !bullet.trim()}
+                      aria-label="Revisar STAR"
+                      title={
+                        isSupported
+                          ? "Revisar e reescrever com STAR"
+                          : "Requer Chrome desktop 148+ com IA local"
+                      }
+                      onClick={() =>
+                        setStarReview({
+                          expIndex,
+                          mode: "bullet",
+                          bulletIndex,
+                        })
+                      }
+                    >
+                      <Sparkles className="size-4" />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      aria-label="Remover bullet"
+                      onClick={() => {
+                        const next = [...data.experiences];
+                        next[expIndex] = {
+                          ...exp,
+                          bullets: exp.bullets.filter((_, i) => i !== bulletIndex),
+                        };
+                        update("experiences", next);
+                      }}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
               <Button
@@ -510,5 +574,19 @@ export function ResumeForm({ data, onChange }: Props) {
         </Field>
       </TabsContent>
     </Tabs>
+
+    {starReview && starReviewExperience ? (
+      <StarReviewDialog
+        open
+        onOpenChange={(open) => {
+          if (!open) setStarReview(null);
+        }}
+        mode={starReview.mode}
+        experience={starReviewExperience}
+        bulletIndex={starReview.bulletIndex}
+        onApply={(updated) => applyExperienceUpdate(starReview.expIndex, updated)}
+      />
+    ) : null}
+    </>
   );
 }
