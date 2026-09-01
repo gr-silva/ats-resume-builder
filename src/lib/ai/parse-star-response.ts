@@ -7,6 +7,7 @@ import type {
   StarExperienceAnalysis,
   StarQuestion,
   StarRewriteItem,
+  StarSuggestion,
 } from "@/lib/ai/star-types";
 
 function str(value: unknown, fallback = ""): string {
@@ -43,6 +44,18 @@ function parseComponentAnalysis(raw: unknown): StarComponentAnalysis {
   };
 }
 
+export function parseSuggestion(raw: unknown): StarSuggestion | null {
+  if (typeof raw === "string") {
+    const issue = raw.trim();
+    return issue ? { issue, idea: "" } : null;
+  }
+  if (!raw || typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  const issue = str(o.issue);
+  if (!issue) return null;
+  return { issue, idea: str(o.idea) };
+}
+
 function parseQuestion(raw: unknown): StarQuestion | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
@@ -67,7 +80,9 @@ export function parseStarBulletAnalysisItem(
         .filter((q): q is StarQuestion => q !== null)
     : [];
   const suggestions = Array.isArray(o.suggestions)
-    ? o.suggestions.map((s) => str(s)).filter(Boolean)
+    ? o.suggestions
+        .map(parseSuggestion)
+        .filter((s): s is StarSuggestion => s !== null)
     : [];
 
   return {

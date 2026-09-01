@@ -5,6 +5,7 @@ import {
   parseStarExperienceAnalysis,
   parseStarJsonResponse,
   parseStarRewrite,
+  parseSuggestion,
 } from "@/lib/ai/parse-star-response";
 
 const validComponent = { text: "Contexto", status: "clear" as const };
@@ -16,7 +17,12 @@ const validBulletAnalysis = {
   task: validComponent,
   action: validComponent,
   result: { text: "40%", status: "clear" as const },
-  suggestions: ["Adicionar métrica"],
+  suggestions: [
+    {
+      issue: "Resultado sem métrica mensurável",
+      idea: "Considere citar redução de tempo ou volume processado por sprint",
+    },
+  ],
   questions: [
     {
       component: "result",
@@ -26,6 +32,27 @@ const validBulletAnalysis = {
   ],
 };
 
+describe("parseSuggestion", () => {
+  it("parses structured suggestion", () => {
+    expect(
+      parseSuggestion({
+        issue: "Verbo genérico",
+        idea: "Use um verbo de impacto como liderou ou implementou",
+      })
+    ).toEqual({
+      issue: "Verbo genérico",
+      idea: "Use um verbo de impacto como liderou ou implementou",
+    });
+  });
+
+  it("supports legacy string suggestions", () => {
+    expect(parseSuggestion("Adicionar métrica")).toEqual({
+      issue: "Adicionar métrica",
+      idea: "",
+    });
+  });
+});
+
 describe("parseStarExperienceAnalysis", () => {
   it("parses valid analysis", () => {
     const result = parseStarExperienceAnalysis({
@@ -34,6 +61,7 @@ describe("parseStarExperienceAnalysis", () => {
     expect(result?.bullets).toHaveLength(1);
     expect(result?.bullets[0].bulletIndex).toBe(0);
     expect(result?.bullets[0].questions[0].component).toBe("result");
+    expect(result?.bullets[0].suggestions[0].idea).toContain("sprint");
   });
 
   it("returns null for invalid payload", () => {

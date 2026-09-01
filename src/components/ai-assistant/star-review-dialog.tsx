@@ -4,7 +4,6 @@ import { AiConsentCheckbox } from "@/components/ai-assistant/ai-consent-checkbox
 import { AiPrepareButton } from "@/components/ai-assistant/ai-prepare-button";
 import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { ProviderStatus } from "@/components/ai-assistant/provider-status";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -33,7 +32,7 @@ import {
   type StarUserAnswer,
 } from "@/lib/ai/star-types";
 import type { Experience } from "@/lib/resume/schema";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { AlignLeft, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type Props = {
@@ -95,6 +94,56 @@ function StarBreakdown({
   );
 }
 
+function StarSuggestionsList({
+  analyses,
+  showBulletLabel,
+}: {
+  analyses: StarBulletAnalysis[];
+  showBulletLabel: boolean;
+}) {
+  const withSuggestions = analyses.filter((a) => a.suggestions.length);
+  if (!withSuggestions.length) return null;
+
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-text-secondary">
+        Sugestões da análise
+      </p>
+      <div className="space-y-2">
+        {withSuggestions.map((analysis) => (
+          <div key={analysis.bulletIndex} className="space-y-2">
+            {showBulletLabel ? (
+              <p className="text-xs font-medium text-muted">
+                Bullet {analysis.bulletIndex + 1}
+              </p>
+            ) : null}
+            {analysis.suggestions.map((suggestion, i) => (
+              <div
+                key={`${analysis.bulletIndex}-${i}`}
+                className="rounded-md border border-border bg-surface/50 px-3 py-2 text-xs"
+              >
+                <p className="text-muted">{suggestion.issue}</p>
+                {suggestion.idea ? (
+                  <p className="mt-1 text-text-secondary">{suggestion.idea}</p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function getBulletOriginalText(
+  analyses: StarBulletAnalysis[],
+  experience: Experience,
+  bulletIndex: number
+): string {
+  const fromAnalysis = analyses.find((a) => a.bulletIndex === bulletIndex)?.original;
+  return (fromAnalysis || experience.bullets[bulletIndex] || "").trim();
+}
+
 export function StarReviewDialog({
   open,
   onOpenChange,
@@ -121,6 +170,7 @@ export function StarReviewDialog({
   const [rewrites, setRewrites] = useState<StarRewriteItem[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [skipped, setSkipped] = useState<Record<string, boolean>>({});
+  const [expandedBullets, setExpandedBullets] = useState<Record<number, boolean>>({});
 
   const context = useMemo(() => getExperienceContext(experience), [experience]);
 
@@ -136,6 +186,7 @@ export function StarReviewDialog({
     setRewrites([]);
     setAnswers({});
     setSkipped({});
+    setExpandedBullets({});
   }, []);
 
   function handleOpenChange(next: boolean) {
@@ -344,20 +395,45 @@ export function StarReviewDialog({
               {questionEntries.map(({ bulletIndex: bi, question }) => {
                 const key = answerKey(bi, question.component);
                 const isSkipped = skipped[key] ?? false;
+                const showBullet = expandedBullets[bi] ?? false;
+                const bulletText = getBulletOriginalText(analyses, experience, bi);
                 return (
                   <div
                     key={key}
                     className="space-y-2 rounded-lg border border-border bg-elevated p-3"
                   >
-                    {mode === "experience" ? (
-                      <p className="text-xs font-medium text-text-secondary">
-                        Bullet {bi + 1} — {STAR_COMPONENT_LABELS[question.component]}
+                    <div className="flex items-center justify-between gap-2">
+                      {mode === "experience" ? (
+                        <p className="text-xs font-medium text-text-secondary">
+                          Bullet {bi + 1} — {STAR_COMPONENT_LABELS[question.component]}
+                        </p>
+                      ) : (
+                        <p className="text-xs font-medium text-text-secondary">
+                          {STAR_COMPONENT_LABELS[question.component]}
+                        </p>
+                      )}
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-muted"
+                        aria-label="Ver bullet original"
+                        title="Ver bullet"
+                        onClick={() =>
+                          setExpandedBullets((prev) => ({
+                            ...prev,
+                            [bi]: !showBullet,
+                          }))
+                        }
+                      >
+                        <AlignLeft className="size-3.5" />
+                      </Button>
+                    </div>
+                    {showBullet ? (
+                      <p className="rounded-md border border-border bg-surface/50 px-2 py-1.5 text-xs text-muted">
+                        {bulletText || "—"}
                       </p>
-                    ) : (
-                      <p className="text-xs font-medium text-text-secondary">
-                        {STAR_COMPONENT_LABELS[question.component]}
-                      </p>
-                    )}
+                    ) : null}
                     <Label>{question.question}</Label>
                     {question.hint ? (
                       <p className="text-xs text-muted">{question.hint}</p>
@@ -391,25 +467,10 @@ export function StarReviewDialog({
                 );
               })}
             </div>
-            {analyses.some((a) => a.suggestions.length) ? (
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-text-secondary">
-                  Sugestões da análise
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {analyses.flatMap((a) =>
-                    a.suggestions.map((s, i) => (
-                      <Badge
-                        key={`${a.bulletIndex}-${i}`}
-                        className="border-accent/30 bg-accent/5 text-accent"
-                      >
-                        {s}
-                      </Badge>
-                    ))
-                  )}
-                </div>
-              </div>
-            ) : null}
+            <StarSuggestionsList
+              analyses={analyses}
+              showBulletLabel={mode === "experience"}
+            />
             {error ? <p className="text-sm text-accent">{error}</p> : null}
             <div className="flex justify-between gap-2">
               <Button
@@ -470,16 +531,10 @@ export function StarReviewDialog({
                       </div>
                     </details>
                     {analysis?.suggestions.length ? (
-                      <div className="flex flex-wrap gap-2">
-                        {analysis.suggestions.map((s, i) => (
-                          <Badge
-                            key={i}
-                            className="border-border bg-surface text-muted"
-                          >
-                            {s}
-                          </Badge>
-                        ))}
-                      </div>
+                      <StarSuggestionsList
+                        analyses={[analysis]}
+                        showBulletLabel={false}
+                      />
                     ) : null}
                   </div>
                 );

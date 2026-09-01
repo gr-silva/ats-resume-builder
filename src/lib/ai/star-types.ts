@@ -13,6 +13,11 @@ export type StarQuestion = {
   hint?: string;
 };
 
+export type StarSuggestion = {
+  issue: string;
+  idea: string;
+};
+
 export type StarBulletAnalysis = {
   bulletIndex: number;
   original: string;
@@ -20,7 +25,7 @@ export type StarBulletAnalysis = {
   task: StarComponentAnalysis;
   action: StarComponentAnalysis;
   result: StarComponentAnalysis;
-  suggestions: string[];
+  suggestions: StarSuggestion[];
   questions: StarQuestion[];
 };
 

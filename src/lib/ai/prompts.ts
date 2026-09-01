@@ -70,7 +70,8 @@ Gere JSON válido conforme o schema fornecido. Regras:
 - status "partial": componente implícito ou incompleto.
 - status "missing": componente ausente ou indetectável.
 - Se status for "partial" ou "missing", inclua em "questions" uma pergunta objetiva em PT-BR para o usuário preencher a lacuna.
-- "suggestions": feedback curto sobre melhorias (ex.: falta métrica, verbo genérico).
+- "suggestions": array de objetos com "issue" (diagnóstico curto do que falta ou está fraco) e "idea" (sugestão acionável: tipo de métrica aplicável ao contexto — tempo, volume, %, custo, NPS — ou frase modelo para inspirar o ajuste, SEM números ou percentuais fictícios).
+- Exemplo de idea: "Considere citar redução de tempo de deploy ou volume de tickets resolvidos por sprint".
 - NÃO invente métricas, empresas, datas ou tecnologias sem base no texto ou nas respostas do usuário.
 - Responda apenas com JSON, sem markdown nem texto extra.`;
 
