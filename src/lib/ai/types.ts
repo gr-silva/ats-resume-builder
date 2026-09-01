@@ -62,4 +62,10 @@ export interface AiProvider {
     prompt: string,
     onProgress?: (progress: GenerateProgress) => void
   ): Promise<AiResumeOutput>;
+  generateJson<T>(
+    prompt: string,
+    schema: Record<string, unknown>,
+    parse: (raw: unknown) => T | null,
+    onProgress?: (progress: GenerateProgress) => void
+  ): Promise<T>;
 }

@@ -4,7 +4,8 @@ import {
   normalizeAvailability,
   type LanguageModelSession,
 } from "@/lib/ai/language-model-api";
-import { parseJsonResponse } from "@/lib/ai/parse-json-response";
+import { parseAiResumeOutput } from "@/lib/ai/merge-resume";
+import { parseStarJsonResponse } from "@/lib/ai/parse-star-response";
 import { createMonotonicProgressReporter } from "@/lib/ai/progress";
 import { buildRetryPrompt } from "@/lib/ai/prompts";
 import { RESUME_JSON_SCHEMA } from "@/lib/ai/resume-json-schema";
@@ -19,13 +20,14 @@ import {
 
 async function promptOnce(
   session: LanguageModelSession,
-  prompt: string
+  prompt: string,
+  schema: Record<string, unknown>
 ): Promise<string> {
   if (!session.prompt) {
     throw new AiUnavailableError("Sessão da IA não suporta geração de texto.");
   }
   return session.prompt(prompt, {
-    responseConstraint: RESUME_JSON_SCHEMA as Record<string, unknown>,
+    responseConstraint: schema,
   });
 }
 
@@ -106,10 +108,12 @@ class ChromePromptProviderImpl implements AiProvider {
     }
   }
 
-  async generateResume(
+  async generateJson<T>(
     prompt: string,
+    schema: Record<string, unknown>,
+    parse: (raw: unknown) => T | null,
     onProgress?: (progress: GenerateProgress) => void
-  ): Promise<AiResumeOutput> {
+  ): Promise<T> {
     if (!hasLanguageModelApi()) {
       throw new AiUnavailableError();
     }
@@ -125,9 +129,9 @@ class ChromePromptProviderImpl implements AiProvider {
 
     try {
       onProgress?.({ phase: "generating" });
-      const response = await promptOnce(session, prompt);
+      const response = await promptOnce(session, prompt, schema);
       try {
-        const result = parseJsonResponse(response);
+        const result = parseStarJsonResponse(response, parse);
         this.ready = true;
         return result;
       } catch (firstError) {
@@ -137,8 +141,8 @@ class ChromePromptProviderImpl implements AiProvider {
             response,
             firstError.message
           );
-          const retryResponse = await promptOnce(session, retryPrompt);
-          const result = parseJsonResponse(retryResponse);
+          const retryResponse = await promptOnce(session, retryPrompt, schema);
+          const result = parseStarJsonResponse(retryResponse, parse);
           this.ready = true;
           return result;
         }
@@ -147,6 +151,18 @@ class ChromePromptProviderImpl implements AiProvider {
     } finally {
       session.destroy?.();
     }
+  }
+
+  async generateResume(
+    prompt: string,
+    onProgress?: (progress: GenerateProgress) => void
+  ): Promise<AiResumeOutput> {
+    return this.generateJson(
+      prompt,
+      RESUME_JSON_SCHEMA as Record<string, unknown>,
+      parseAiResumeOutput,
+      onProgress
+    );
   }
 }
 
