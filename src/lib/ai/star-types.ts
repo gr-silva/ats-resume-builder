@@ -53,6 +53,13 @@ export type StarUserAnswer = {
   skipped?: boolean;
 };
 
+export type StarSelectedSuggestion = {
+  bulletIndex: number;
+  issue: string;
+  idea: string;
+  value: string;
+};
+
 export const STAR_COMPONENT_LABELS: Record<StarComponent, string> = {
   situation: "Situação",
   task: "Tarefa",

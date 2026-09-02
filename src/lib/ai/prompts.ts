@@ -1,6 +1,7 @@
 import type { WizardAnswers } from "@/lib/ai/types";
 import type {
   StarExperienceContext,
+  StarSelectedSuggestion,
   StarUserAnswer,
 } from "@/lib/ai/star-types";
 
@@ -128,7 +129,8 @@ ${formatBulletsList(bullets)}
 export function buildStarRewritePrompt(
   context: StarExperienceContext,
   items: Array<{ bulletIndex: number; original: string }>,
-  userAnswers?: StarUserAnswer[]
+  userAnswers?: StarUserAnswer[],
+  selectedSuggestions?: StarSelectedSuggestion[]
 ): string {
   const bulletsBlock = items
     .map((item) => `[${item.bulletIndex}] ${item.original.trim() || "(vazio)"}`)
@@ -144,16 +146,29 @@ export function buildStarRewritePrompt(
           .join("\n")}`
       : "";
 
+  const suggestionsBlock =
+    selectedSuggestions && selectedSuggestions.length
+      ? `\nSugestões que o usuário pediu para incluir na reescrita:\n${selectedSuggestions
+          .map((s) => {
+            const valueLine = s.value.trim()
+              ? `Valor/detalhe do usuário: ${s.value.trim()}`
+              : "Valor/detalhe: (não informado — incorpore a ideia abaixo SEM inventar números, %, datas ou métricas)";
+            return `- Bullet ${s.bulletIndex}\n  Diagnóstico: ${s.issue}\n  Ideia: ${s.idea}\n  ${valueLine}`;
+          })
+          .join("\n")}`
+      : "";
+
   return `${STAR_SYSTEM_PROMPT}
 
-Reescreva os bullets abaixo em formato STAR comprimido (uma frase ATS-friendly).
-Use as respostas do usuário quando fornecidas. Não invente dados.
+Reescreva APENAS os bullets listados abaixo em formato STAR comprimido (uma frase ATS-friendly).
+Use as respostas e sugestões marcadas pelo usuário quando fornecidas. Não invente dados.
+Se uma sugestão foi marcada sem valor/detalhe, incorpore a ideia na reescrita sem inventar números, percentuais, datas ou métricas.
 
 Contexto da experiência:
 ${formatExperienceContext(context)}
 
 Bullets originais:
-${bulletsBlock}${answersBlock}
+${bulletsBlock}${answersBlock}${suggestionsBlock}
 
 Retorne "rewrites" com bulletIndex, original, rewritten e breakdown (situation, task, action, result).`;
 }
