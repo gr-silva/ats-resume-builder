@@ -84,7 +84,10 @@ describe("STAR prompts", () => {
       ]
     );
     expect(withoutValue).toContain("(não informado");
-    expect(withoutValue).toContain("SEM inventar números");
+    expect(withoutValue).toContain("OBRIGATÓRIO aplicar esta ideia");
+    expect(withoutValue).toContain("não significa omitir");
     expect(withoutValue).toContain("Considere citar redução de tempo");
+    expect(withoutValue).toContain("DEVE alterar o rewritten");
+    expect(withoutValue).toContain("Proibido devolver o bullet original");
   });
 });

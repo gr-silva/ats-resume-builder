@@ -146,23 +146,42 @@ export function buildStarRewritePrompt(
           .join("\n")}`
       : "";
 
-  const suggestionsBlock =
+  const hasSelectedSuggestions = Boolean(
     selectedSuggestions && selectedSuggestions.length
-      ? `\nSugestões que o usuário pediu para incluir na reescrita:\n${selectedSuggestions
-          .map((s) => {
-            const valueLine = s.value.trim()
-              ? `Valor/detalhe do usuário: ${s.value.trim()}`
-              : "Valor/detalhe: (não informado — incorpore a ideia abaixo SEM inventar números, %, datas ou métricas)";
-            return `- Bullet ${s.bulletIndex}\n  Diagnóstico: ${s.issue}\n  Ideia: ${s.idea}\n  ${valueLine}`;
-          })
-          .join("\n")}`
-      : "";
+  );
+
+  const suggestionsBlock = hasSelectedSuggestions
+    ? `\nSugestões que o usuário pediu para incluir na reescrita (OBRIGATÓRIO refletir cada uma no rewritten):\n${selectedSuggestions!
+        .map((s) => {
+          if (s.value.trim()) {
+            return `- Bullet ${s.bulletIndex}
+  Diagnóstico: ${s.issue}
+  Ideia: ${s.idea}
+  Valor/detalhe do usuário: ${s.value.trim()}
+  OBRIGATÓRIO: use o valor do usuário no rewritten.`;
+          }
+          return `- Bullet ${s.bulletIndex}
+  Diagnóstico: ${s.issue}
+  Ideia: ${s.idea}
+  Valor/detalhe: (não informado)
+  OBRIGATÓRIO aplicar esta ideia no rewritten: use a parte qualitativa/estrutural (especificar o quê, clarificar a ação, nomear tipo de rotina/impacto/contexto). Não inventar cifras, %, datas ou métricas — mas não inventar números NÃO significa omitir a sugestão. O rewritten deve mudar de forma visível em relação ao original.`;
+        })
+        .join("\n")}`
+    : "";
+
+  const selectedRules = hasSelectedSuggestions
+    ? `
+Regras para sugestões marcadas:
+- Toda sugestão marcada DEVE alterar o rewritten de forma visível em relação ao original.
+- Proibido devolver o bullet original (ou só cosmético: pontuação/sinônimos) se houver sugestão marcada.
+- Sem valor do usuário: aplicar a ideia qualitativamente; sem valor NÃO autoriza ignorar a sugestão.`
+    : "";
 
   return `${STAR_SYSTEM_PROMPT}
 
 Reescreva APENAS os bullets listados abaixo em formato STAR comprimido (uma frase ATS-friendly).
 Use as respostas e sugestões marcadas pelo usuário quando fornecidas. Não invente dados.
-Se uma sugestão foi marcada sem valor/detalhe, incorpore a ideia na reescrita sem inventar números, percentuais, datas ou métricas.
+Se uma sugestão foi marcada sem valor/detalhe, OBRIGATÓRIO aplicar a ideia qualitativamente no rewritten — não inventar números não significa omitir a sugestão.${selectedRules}
 
 Contexto da experiência:
 ${formatExperienceContext(context)}
