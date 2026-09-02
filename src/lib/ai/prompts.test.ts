@@ -87,7 +87,10 @@ describe("STAR prompts", () => {
     expect(withoutValue).toContain("OBRIGATÓRIO aplicar esta ideia");
     expect(withoutValue).toContain("não significa omitir");
     expect(withoutValue).toContain("Considere citar redução de tempo");
-    expect(withoutValue).toContain("DEVE alterar o rewritten");
-    expect(withoutValue).toContain("Proibido devolver o bullet original");
+    expect(withoutValue).toContain("ADIÇÃO/INTEGRAÇÃO");
+    expect(withoutValue).toContain("NÃO descartar");
+    expect(withoutValue).toContain("base obrigatória");
+    expect(withoutValue).toContain("Acrescentar apenas");
+    expect(withoutValue).toContain("Proibido reescrever do zero");
   });
 });

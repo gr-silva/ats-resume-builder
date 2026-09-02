@@ -164,7 +164,7 @@ export function buildStarRewritePrompt(
   Diagnóstico: ${s.issue}
   Ideia: ${s.idea}
   Valor/detalhe: (não informado)
-  OBRIGATÓRIO aplicar esta ideia no rewritten: use a parte qualitativa/estrutural (especificar o quê, clarificar a ação, nomear tipo de rotina/impacto/contexto). Não inventar cifras, %, datas ou métricas — mas não inventar números NÃO significa omitir a sugestão. O rewritten deve mudar de forma visível em relação ao original.`;
+  OBRIGATÓRIO aplicar esta ideia no rewritten: use a parte qualitativa/estrutural (especificar o quê, clarificar a ação, nomear tipo de rotina/impacto/contexto). Não inventar cifras, %, datas ou métricas — mas não inventar números NÃO significa omitir a sugestão. Integre a ideia ao conteúdo já existente (adição, não substituição).`;
         })
         .join("\n")}`
     : "";
@@ -172,14 +172,18 @@ export function buildStarRewritePrompt(
   const selectedRules = hasSelectedSuggestions
     ? `
 Regras para sugestões marcadas:
-- Toda sugestão marcada DEVE alterar o rewritten de forma visível em relação ao original.
-- Proibido devolver o bullet original (ou só cosmético: pontuação/sinônimos) se houver sugestão marcada.
+- Toda sugestão marcada DEVE alterar o rewritten de forma visível por ADIÇÃO/INTEGRAÇÃO do novo conteúdo — não por substituição do original.
+- Proibido devolver o bullet original sem incorporar o novo (ou só cosmético: pontuação/sinônimos) se houver sugestão marcada.
+- O original deve continuar reconhecível no rewritten.
 - Sem valor do usuário: aplicar a ideia qualitativamente; sem valor NÃO autoriza ignorar a sugestão.`
     : "";
 
   return `${STAR_SYSTEM_PROMPT}
 
 Reescreva APENAS os bullets listados abaixo em formato STAR comprimido (uma frase ATS-friendly).
+O bullet original é a base obrigatória: NÃO descartar informações já presentes (contexto, tecnologias, ações, resultados, métricas).
+Acrescentar apenas o que vier das respostas do usuário e/ou sugestões marcadas; reordenar/ligar para fluidez sem perder a essência STAR.
+Proibido reescrever do zero ou trocar o conteúdo original por outra narrativa.
 Use as respostas e sugestões marcadas pelo usuário quando fornecidas. Não invente dados.
 Se uma sugestão foi marcada sem valor/detalhe, OBRIGATÓRIO aplicar a ideia qualitativamente no rewritten — não inventar números não significa omitir a sugestão.${selectedRules}
 
