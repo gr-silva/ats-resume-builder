@@ -49,5 +49,42 @@ describe("STAR prompts", () => {
     expect(prompt).toContain("Redução de 30% no tempo");
     expect(prompt).toContain("result");
     expect(prompt).toContain("Não invente");
+    expect(prompt).toContain("APENAS os bullets listados");
+  });
+
+  it("includes selected suggestions with and without values", () => {
+    const withValue = buildStarRewritePrompt(
+      context,
+      [{ bulletIndex: 0, original: "Automatizei rotinas" }],
+      undefined,
+      [
+        {
+          bulletIndex: 0,
+          issue: "Falta especificar rotinas",
+          idea: "Inclua o número de rotinas ou o impacto",
+          value: "3 rotinas de onboarding",
+        },
+      ]
+    );
+    expect(withValue).toContain("Sugestões que o usuário pediu para incluir");
+    expect(withValue).toContain("3 rotinas de onboarding");
+    expect(withValue).toContain("Inclua o número de rotinas");
+
+    const withoutValue = buildStarRewritePrompt(
+      context,
+      [{ bulletIndex: 1, original: "Melhorei o processo" }],
+      undefined,
+      [
+        {
+          bulletIndex: 1,
+          issue: "Sem métrica",
+          idea: "Considere citar redução de tempo",
+          value: "",
+        },
+      ]
+    );
+    expect(withoutValue).toContain("(não informado");
+    expect(withoutValue).toContain("SEM inventar números");
+    expect(withoutValue).toContain("Considere citar redução de tempo");
   });
 });
