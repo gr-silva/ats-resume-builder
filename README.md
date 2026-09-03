@@ -78,7 +78,9 @@ npm start
 
 ## Privacidade (MVP)
 
-Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador (`localStorage`). O assistente IA processa dados **localmente no Chrome** (Gemini Nano) — nada é enviado a APIs externas. Sem cadastro e sem banco de dados neste MVP.
+Nenhum currículo é armazenado em servidor. O PDF é gerado sob demanda; o rascunho fica só no seu navegador (`localStorage`). O assistente IA processa dados **localmente no Chrome** (Gemini Nano) — o texto do currículo, importações e respostas da IA **não** são enviados a APIs externas nem a banco de dados. Sem cadastro neste MVP.
+
+**Analytics:** o deploy na Vercel usa [Web Analytics](https://vercel.com/docs/analytics) para métricas **agregadas** de acesso (visitas e páginas). Isso **não** inclui nem analisa campos do formulário, bullets, rascunho ou saídas da IA. Para ver os números no painel, ative Web Analytics no projeto na [dashboard da Vercel](https://vercel.com/dashboard).
 
 ## Como contribuir
 

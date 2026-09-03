@@ -10,6 +10,7 @@ import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { PrivacyNotice } from "@/components/privacy-notice";
 import { ResumeForm } from "@/components/resume-form";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
@@ -159,6 +160,8 @@ function BuilderAppContent() {
         </div>
       </header>
 
+      <PrivacyNotice />
+
       <div
         id="editor"
         className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
@@ -204,7 +207,9 @@ function BuilderAppContent() {
           <p className="text-xs text-muted">
             Rascunho salvo automaticamente no navegador (localStorage). O
             assistente IA processa dados localmente no Chrome (Gemini Nano) —
-            nada é enviado a servidores externos nem a banco de dados.
+            conteúdo do currículo e respostas da IA não vão para API externa nem
+            banco. Usamos Vercel Web Analytics só para visitas/páginas
+            agregadas, sem analisar o texto preenchido.
           </p>
         </aside>
       </div>
