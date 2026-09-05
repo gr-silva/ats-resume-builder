@@ -15,8 +15,8 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 
 - Geração ATS no **foco Geral** (Markdown + PDF)
 - Formulário na plataforma + rascunho no navegador (`localStorage`)
-- **Assistente IA** (Chrome Prompt API / Gemini Nano on-device): wizard de perguntas e importação por texto
-- Nichos (Full Stack, IA…), revisão com IA na nuvem e conta na nuvem: **roadmap**
+- **Assistente IA** (Chrome Prompt API / Gemini Nano on-device): wizard, importação e revisão STAR
+- Evolução planejada: ver [ROADMAP.md](ROADMAP.md) (**local-first**; sem conta na nuvem no escopo ativo)
 
 ## Assistente IA (Chrome)
 
@@ -103,14 +103,7 @@ src/components/     # formulário + assistente IA + UI
 - `applyFocus(data, focusId)` — hoje identidade para `geral`; ponto de extensão para nichos + IA.
 - Focos `fullstack` e `ia` existem como stubs e aparecem na UI como “em breve”.
 
-## Roadmap
-
-- [ ] Seleção de nicho (Full Stack, IA, custom)
-- [x] Revisão / reescrita STAR com IA (Chrome local, com perguntas quando faltar info)
-- [ ] Conta + salvamento na nuvem
-- [ ] Export DOCX / textos LinkedIn
-- [x] Deploy na Vercel
-- [x] Assistente IA local (Chrome Prompt API)
+Planejamento de produto: [ROADMAP.md](ROADMAP.md).
 
 ## Licença
 
