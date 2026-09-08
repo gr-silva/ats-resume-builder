@@ -17,7 +17,13 @@ Qualquer evolução deve preservar essa promessa. Recursos que exijam guardar da
 - [x] Assistente IA local (Chrome Prompt API) — wizard + importação por texto
 - [x] Revisão / reescrita STAR com IA local (perguntas, sugestões selecionáveis, preservação do texto)
 - [x] Vercel Web Analytics (métricas agregadas de acesso) + aviso de privacidade na UI e no README
-- [x] Caminho sem IA — fluxo principal (formulário + MD/PDF) claro em qualquer navegador; CTAs e mobile revisados
+
+### Caminho sem IA (maioria dos usuários)
+
+- [x] Deixar óbvio que o fluxo principal (preencher + MD/PDF) funciona em qualquer navegador
+- [x] Mensagens/UX quando a IA estiver indisponível (sem parecer que o app “não funciona”)
+- [x] Revisar hierarquia de CTAs no header (Começar / formulário vs Assistente / Importar)
+- [x] Melhorias de layout e usabilidade em mobile (tabs, bullets, preview)
 
 ---
 
