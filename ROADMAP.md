@@ -17,6 +17,7 @@ Qualquer evolução deve preservar essa promessa. Recursos que exijam guardar da
 - [x] Assistente IA local (Chrome Prompt API) — wizard + importação por texto
 - [x] Revisão / reescrita STAR com IA local (perguntas, sugestões selecionáveis, preservação do texto)
 - [x] Vercel Web Analytics (métricas agregadas de acesso) + aviso de privacidade na UI e no README
+- [x] Caminho sem IA — fluxo principal (formulário + MD/PDF) claro em qualquer navegador; CTAs e mobile revisados
 
 ---
 
@@ -24,34 +25,25 @@ Qualquer evolução deve preservar essa promessa. Recursos que exijam guardar da
 
 Ordenado pelo impacto no caminho que **a maioria** usa (formulário → exportar), não só quem tem Chrome + hardware para IA.
 
-### 1. Caminho sem IA (maioria dos usuários)
-
-Firefox, Safari e mobile não têm Prompt API — os botões de IA ficam desabilitados, mas a experiência ainda parece “IA-first”.
-
-- [ ] Deixar óbvio que o fluxo principal (preencher + MD/PDF) funciona em qualquer navegador
-- [ ] Mensagens/UX quando a IA estiver indisponível (sem parecer que o app “não funciona”)
-- [ ] Revisar hierarquia de CTAs no header (Começar / formulário vs Assistente / Importar)
-- [ ] Melhorias de layout e usabilidade em mobile (tabs, bullets, preview)
-
-### 2. Fechar valor de exportação
+### 1. Fechar valor de exportação
 
 - [ ] Export DOCX (ATS-friendly)
 - [ ] Textos prontos para LinkedIn (sobre / experiências), gerados a partir do rascunho local — sem envio a servidor além do necessário para gerar o arquivo
 
-### 3. Nichos (Full Stack, IA, …)
+### 2. Nichos (Full Stack, IA, …)
 
 Hoje existem stubs e badges “em breve” na UI.
 
 - [ ] Ativar seleção de nicho de forma útil (reordenar/ênfase de skills e experiências) **ou**
 - [ ] Remover/suavizar badges “em breve” até o recurso existir — evitar promessa vazia
 
-### 4. Qualidade da IA local (Chrome)
+### 3. Qualidade da IA local (Chrome)
 
 - [ ] Continuar polindo prompts STAR (preservar conteúdo, aplicar sugestões sem inventar métricas)
 - [ ] Troubleshooting / onboarding mais claros para download do modelo e hardware mínimo
 - [ ] Avaliar eventos de analytics **só de produto** (ex.: abriu wizard) com disclosure explícito — sem texto do currículo (opcional; só se a privacidade continuar clara)
 
-### 5. Apoio ao projeto (open source)
+### 4. Apoio ao projeto (open source)
 
 Doação é opcional e **nunca** paywall.
 

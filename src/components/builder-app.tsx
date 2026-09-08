@@ -97,21 +97,23 @@ function BuilderAppContent() {
           ATS Resume Builder
         </h1>
         <p className="mt-3 text-base text-text-secondary">
-          Preencha os campos base e baixe um currículo ATS em Markdown e PDF —
-          foco Geral, gratuito, sem cadastro.
+          Preencha o formulário e baixe Markdown ou PDF em qualquer navegador —
+          foco Geral, gratuito, sem cadastro. Assistente IA é opcional (Chrome
+          desktop).
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Badge className="border-accent/40 bg-accent/10 text-accent">
-            Foco: {FOCUS_LABELS.geral}
+            Qualquer navegador
           </Badge>
+          <Badge>Foco: {FOCUS_LABELS.geral}</Badge>
           <Badge
             title={
               isSupported
                 ? "Assistente IA local via Chrome (Gemini Nano)"
-                : "Requer Chrome desktop 148+ com hardware compatível"
+                : "Opcional — requer Chrome desktop 148+ com hardware compatível"
             }
           >
-            Assistente IA {isSupported ? "(Chrome)" : "— indisponível"}
+            IA opcional (Chrome)
           </Badge>
           <Badge title="Nichos Full Stack e IA — em breve">
             Full Stack — em breve
@@ -124,32 +126,6 @@ function BuilderAppContent() {
           <Button
             type="button"
             variant="outline"
-            disabled={!isSupported || checking}
-            title={
-              isSupported
-                ? "Preencher com assistente IA"
-                : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
-            }
-            onClick={() => setWizardOpen(true)}
-          >
-            <Sparkles className="size-4" /> Assistente IA
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            disabled={!isSupported || checking}
-            title={
-              isSupported
-                ? "Importar currículo com IA"
-                : "Requer Chrome desktop 148+ (~16 GB RAM, GPU compatível)"
-            }
-            onClick={() => setImportOpen(true)}
-          >
-            <Upload className="size-4" /> Importar
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
             onClick={() => loadDemo(createDemoResume())}
           >
             <Sparkles className="size-4" /> Carregar demo
@@ -157,7 +133,40 @@ function BuilderAppContent() {
           <Button type="button" variant="ghost" onClick={reset}>
             <Eraser className="size-4" /> Limpar
           </Button>
+          {isSupported ? (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={checking}
+                title="Preencher com assistente IA"
+                onClick={() => setWizardOpen(true)}
+              >
+                <Sparkles className="size-4" /> Assistente IA
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={checking}
+                title="Importar currículo com IA"
+                onClick={() => setImportOpen(true)}
+              >
+                <Upload className="size-4" /> Importar
+              </Button>
+            </>
+          ) : null}
         </div>
+        {!isSupported && !checking ? (
+          <p className="mt-3 text-sm text-muted">
+            IA local disponível no Chrome desktop.{" "}
+            <a
+              href="#ai-setup"
+              className="text-accent underline-offset-2 hover:underline"
+            >
+              Saiba mais
+            </a>
+          </p>
+        ) : null}
       </header>
 
       <PrivacyNotice />
@@ -199,17 +208,18 @@ function BuilderAppContent() {
             {error ? (
               <p className="mb-3 text-sm text-accent">{error}</p>
             ) : null}
-            <pre className="max-h-[70vh] overflow-auto whitespace-pre-wrap rounded-lg border border-border bg-background p-4 font-mono text-xs leading-relaxed text-text-secondary">
+            <pre className="max-h-[70vh] overflow-auto overflow-x-auto whitespace-pre-wrap rounded-lg border border-border bg-background p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4">
               {markdown.trim() || "Preencha o formulário para ver o preview."}
             </pre>
           </div>
           <AiSetupPanel />
           <p className="text-xs text-muted">
             Rascunho salvo automaticamente no navegador (localStorage). O
-            assistente IA processa dados localmente no Chrome (Gemini Nano) —
-            conteúdo do currículo e respostas da IA não vão para API externa nem
-            banco. Usamos Vercel Web Analytics só para visitas/páginas
-            agregadas, sem analisar o texto preenchido.
+            formulário e o export MD/PDF funcionam em qualquer navegador. A IA
+            opcional processa dados localmente no Chrome (Gemini Nano) — conteúdo
+            do currículo e respostas da IA não vão para API externa nem banco.
+            Usamos Vercel Web Analytics só para visitas/páginas agregadas, sem
+            analisar o texto preenchido.
           </p>
         </aside>
       </div>

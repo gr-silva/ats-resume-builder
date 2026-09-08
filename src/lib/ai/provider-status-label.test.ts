@@ -51,6 +51,14 @@ describe("getProviderStatusLabel", () => {
       })
     ).toBe("Gerando currículo…");
   });
+
+  it("frames unavailable as optional AI in this browser", () => {
+    expect(
+      getProviderStatusLabel({
+        availability: "unavailable",
+      })
+    ).toBe("IA opcional indisponível neste navegador");
+  });
 });
 
 describe("needsModelPrepare", () => {

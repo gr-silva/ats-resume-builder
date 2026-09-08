@@ -68,8 +68,11 @@ export function ProviderStatus({
       {availability === "unavailable" && showTroubleshooting ? (
         <div className="mt-2 space-y-1 text-xs text-muted">
           <p>
-            Use Chrome desktop 148+ com hardware compatível (~16 GB RAM, GPU com
-            4+ GB VRAM). Você ainda pode preencher o formulário manualmente.
+            Formulário e export MD/PDF funcionam normalmente neste navegador.
+          </p>
+          <p>
+            O assistente opcional exige Chrome desktop 148+ com hardware
+            compatível (~16 GB RAM, GPU com 4+ GB VRAM).
           </p>
           <p>
             <a

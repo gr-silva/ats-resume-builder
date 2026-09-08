@@ -38,7 +38,7 @@ export function getProviderStatusLabel({
     return "Modelo disponível para download";
   }
 
-  return "IA do Chrome indisponível";
+  return "IA opcional indisponível neste navegador";
 }
 
 export function isProviderStatusOk({
