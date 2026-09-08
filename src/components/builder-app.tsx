@@ -16,7 +16,7 @@ import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
-import { Download, Eraser, FileText, Sparkles, Upload } from "lucide-react";
+import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
 import { useMemo, useState } from "react";
 
 export function BuilderApp() {
@@ -128,45 +128,62 @@ function BuilderAppContent() {
             variant="outline"
             onClick={() => loadDemo(createDemoResume())}
           >
-            <Sparkles className="size-4" /> Carregar demo
+            <Play className="size-4" /> Carregar demo
           </Button>
-          <Button type="button" variant="ghost" onClick={reset}>
-            <Eraser className="size-4" /> Limpar
+        </div>
+        <div className="mt-3 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-muted">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted hover:text-foreground"
+            onClick={reset}
+          >
+            <Eraser className="size-3.5" /> Limpar
           </Button>
           {isSupported ? (
             <>
+              <span aria-hidden className="select-none text-border">
+                ·
+              </span>
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
+                size="sm"
+                className="text-muted hover:text-foreground"
                 disabled={checking}
                 title="Preencher com assistente IA"
                 onClick={() => setWizardOpen(true)}
               >
-                <Sparkles className="size-4" /> Assistente IA
+                <Sparkles className="size-3.5" /> Assistente IA
               </Button>
+              <span aria-hidden className="select-none text-border">
+                ·
+              </span>
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
+                size="sm"
+                className="text-muted hover:text-foreground"
                 disabled={checking}
                 title="Importar currículo com IA"
                 onClick={() => setImportOpen(true)}
               >
-                <Upload className="size-4" /> Importar
+                <Upload className="size-3.5" /> Importar
               </Button>
             </>
+          ) : !checking ? (
+            <span className="px-2">
+              IA local disponível no Chrome desktop.{" "}
+              <a
+                href="#ai-setup"
+                className="text-accent underline-offset-2 hover:underline"
+              >
+                Saiba mais
+              </a>
+            </span>
           ) : null}
         </div>
-        {!isSupported && !checking ? (
-          <p className="mt-3 text-sm text-muted">
-            IA local disponível no Chrome desktop.{" "}
-            <a
-              href="#ai-setup"
-              className="text-accent underline-offset-2 hover:underline"
-            >
-              Saiba mais
-            </a>
-          </p>
-        ) : null}
       </header>
 
       <PrivacyNotice />
