@@ -214,32 +214,35 @@ export function ResumeForm({ data, onChange }: Props) {
           STAR comprimido: cada bullet = contexto + ação/tecnologia + resultado
           mensurável. Evite frases genéricas.
         </p>
+        {!isSupported && !checking ? (
+          <p className="text-xs text-muted">
+            Revisão STAR com IA disponível no Chrome desktop.
+          </p>
+        ) : null}
         {data.experiences.map((exp, expIndex) => (
           <div
             key={exp.id}
             className="space-y-3 rounded-lg border border-border bg-elevated p-4"
           >
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <span className="text-sm font-medium text-text-secondary">
                 Experiência {expIndex + 1}
               </span>
-              <div className="flex items-center gap-1">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={!isSupported || checking}
-                  title={
-                    isSupported
-                      ? "Revisar STAR de todos os bullets"
-                      : "Requer Chrome desktop 148+ com IA local"
-                  }
-                  onClick={() =>
-                    setStarReview({ expIndex, mode: "experience" })
-                  }
-                >
-                  <Sparkles className="size-4" /> Revisar STAR (todos)
-                </Button>
+              <div className="flex flex-wrap items-center gap-1">
+                {isSupported ? (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={checking}
+                    title="Revisar STAR de todos os bullets"
+                    onClick={() =>
+                      setStarReview({ expIndex, mode: "experience" })
+                    }
+                  >
+                    <Sparkles className="size-4" /> Revisar STAR (todos)
+                  </Button>
+                ) : null}
                 <Button
                   type="button"
                   variant="ghost"
@@ -294,7 +297,10 @@ export function ResumeForm({ data, onChange }: Props) {
             <div className="space-y-3">
               <Label>Bullets (STAR)</Label>
               {exp.bullets.map((bullet, bulletIndex) => (
-                <div key={bulletIndex} className="flex gap-2">
+                <div
+                  key={bulletIndex}
+                  className="flex flex-col gap-2 sm:flex-row"
+                >
                   <Textarea
                     className="min-h-[72px] flex-1"
                     value={bullet}
@@ -307,28 +313,26 @@ export function ResumeForm({ data, onChange }: Props) {
                     }}
                     placeholder="Desenvolvi X com Y, resultando em Z (número)."
                   />
-                  <div className="flex flex-col gap-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      disabled={!isSupported || checking || !bullet.trim()}
-                      aria-label="Revisar STAR"
-                      title={
-                        isSupported
-                          ? "Revisar e reescrever com STAR"
-                          : "Requer Chrome desktop 148+ com IA local"
-                      }
-                      onClick={() =>
-                        setStarReview({
-                          expIndex,
-                          mode: "bullet",
-                          bulletIndex,
-                        })
-                      }
-                    >
-                      <Sparkles className="size-4" />
-                    </Button>
+                  <div className="flex flex-row gap-1 sm:flex-col">
+                    {isSupported ? (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={checking || !bullet.trim()}
+                        aria-label="Revisar STAR"
+                        title="Revisar e reescrever com STAR"
+                        onClick={() =>
+                          setStarReview({
+                            expIndex,
+                            mode: "bullet",
+                            bulletIndex,
+                          })
+                        }
+                      >
+                        <Sparkles className="size-4" />
+                      </Button>
+                    ) : null}
                     <Button
                       type="button"
                       variant="ghost"
@@ -338,7 +342,9 @@ export function ResumeForm({ data, onChange }: Props) {
                         const next = [...data.experiences];
                         next[expIndex] = {
                           ...exp,
-                          bullets: exp.bullets.filter((_, i) => i !== bulletIndex),
+                          bullets: exp.bullets.filter(
+                            (_, i) => i !== bulletIndex
+                          ),
                         };
                         update("experiences", next);
                       }}

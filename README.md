@@ -13,9 +13,9 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 
 ## Escopo do MVP
 
-- Geração ATS no **foco Geral** (Markdown + PDF)
+- Geração ATS no **foco Geral** (Markdown + PDF) — funciona em **qualquer navegador**
 - Formulário na plataforma + rascunho no navegador (`localStorage`)
-- **Assistente IA** (Chrome Prompt API / Gemini Nano on-device): wizard, importação e revisão STAR
+- **Assistente IA opcional** (Chrome Prompt API / Gemini Nano on-device): wizard, importação e revisão STAR
 - Evolução planejada: ver [ROADMAP.md](ROADMAP.md) (**local-first**; sem conta na nuvem no escopo ativo)
 
 ## Assistente IA (Chrome)
@@ -34,7 +34,7 @@ O assistente usa a [Prompt API do Chrome](https://developer.chrome.com/docs/ai/p
 2. **Importar** — cole o texto do currículo (ou carregue `.txt`/`.md`) e extraia os campos
 3. **Revisar STAR** — analise e reescreva bullets no formato STAR comprimido; se faltar Situação, Tarefa, Ação ou Resultado, a IA faz perguntas antes de reescrever (por bullet ou por experiência inteira)
 
-**Compatibilidade:** Firefox, Safari e mobile não suportam a Prompt API — os botões de IA ficam desabilitados; o preenchimento manual continua disponível.
+**Compatibilidade:** o fluxo principal (preencher + MD/PDF) funciona em Firefox, Safari, Chrome e mobile. A IA é opcional e só aparece no Chrome desktop com Prompt API; nos demais navegadores o app deixa claro que o formulário já basta.
 
 ## Stack
 
@@ -69,12 +69,11 @@ npm start
 
 ## Uso
 
-1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra.
-2. Use **Assistente IA** (Chrome) para acelerar o preenchimento ou **Importar** para colar um currículo existente.
-3. Na aba Experiência, use **Revisar STAR** em cada bullet ou **Revisar STAR (todos)** no bloco da experiência.
-4. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
-5. Baixe **MD** ou **PDF** (foco Geral).
-6. O rascunho é salvo automaticamente no navegador.
+1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra — em qualquer navegador.
+2. Baixe **MD** ou **PDF** (foco Geral). O rascunho é salvo automaticamente no navegador.
+3. (Opcional, Chrome) Use **Assistente IA** para acelerar o preenchimento ou **Importar** para colar um currículo existente.
+4. (Opcional, Chrome) Na aba Experiência, use **Revisar STAR** em cada bullet ou **Revisar STAR (todos)** no bloco da experiência.
+5. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
 
 ## Privacidade (MVP)
 
