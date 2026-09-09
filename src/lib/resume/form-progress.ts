@@ -98,6 +98,12 @@ export function getFormProgress(data: ResumeData): FormProgress {
   };
 }
 
+/** First tab that is not fully done; falls back to dados. */
+export function getFirstIncompleteTab(data: ResumeData): FormTabId {
+  const { sections } = getFormProgress(data);
+  return FORM_TAB_IDS.find((id) => sections[id] !== "done") ?? "dados";
+}
+
 export const FORM_TAB_LABELS: Record<FormTabId, string> = {
   dados: "Dados",
   resumo: "Resumo",
@@ -105,4 +111,14 @@ export const FORM_TAB_LABELS: Record<FormTabId, string> = {
   experiencia: "Experiência",
   formacao: "Formação",
   extra: "Extra",
+};
+
+export const FORM_TAB_NEXT_HINTS: Record<FormTabId, string> = {
+  dados: "Comece pelo nome e cargo-alvo. O preview atualiza ao lado.",
+  resumo: "Escreva 3–4 linhas com stack, experiência e um resultado concreto.",
+  skills: "Agrupe competências em categorias e adicione itens como tags.",
+  experiencia:
+    "Inclua cargo, empresa e bullets com contexto, ação e resultado.",
+  formacao: "Informe curso/grau e instituição (o período é opcional).",
+  extra: "Cursos, idiomas e disponibilidade reforçam o currículo.",
 };
