@@ -21,6 +21,7 @@ import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
 import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
+import type { ResumeData } from "@/lib/resume/schema";
 import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
@@ -33,6 +34,7 @@ export function BuilderApp() {
 }
 
 type PendingExport = "pdf" | "markdown" | null;
+type PendingDraftAction = "reset" | "demo" | null;
 
 function BuilderAppContent() {
   const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
@@ -42,13 +44,20 @@ function BuilderAppContent() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
   const [pendingExport, setPendingExport] = useState<PendingExport>(null);
+  const [pendingDraftAction, setPendingDraftAction] =
+    useState<PendingDraftAction>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
+  const [toastDurationMs, setToastDurationMs] = useState(3000);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
-  const showToast = useCallback((text: string) => {
-    setToast({ id: Date.now(), text });
-  }, []);
+  const showToast = useCallback(
+    (message: Omit<ToastMessage, "id">, durationMs = 3000) => {
+      setToastDurationMs(durationMs);
+      setToast({ id: Date.now(), ...message });
+    },
+    []
+  );
 
   const dismissToast = useCallback(() => {
     setToast(null);
@@ -78,7 +87,7 @@ function BuilderAppContent() {
       a.download = `${(data.name || "curriculo").trim() || "curriculo"}-ATS-Geral.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-      showToast("PDF baixado");
+      showToast({ text: "PDF baixado" });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao baixar PDF.");
     } finally {
@@ -94,7 +103,7 @@ function BuilderAppContent() {
     a.download = `${(data.name || "curriculo").trim() || "curriculo"}-ATS-Geral.md`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast("Markdown baixado");
+    showToast({ text: "Markdown baixado" });
   }
 
   function requestExport(kind: "pdf" | "markdown") {
@@ -119,6 +128,41 @@ function BuilderAppContent() {
     }
   }
 
+  function applyDraftAction(action: "reset" | "demo", previous: ResumeData) {
+    if (action === "reset") {
+      reset();
+      showToast(
+        {
+          text: "Rascunho limpo",
+          action: {
+            label: "Desfazer",
+            onClick: () => setData(previous),
+          },
+        },
+        8000
+      );
+      return;
+    }
+    loadDemo(createDemoResume());
+    showToast(
+      {
+        text: "Demo carregada",
+        action: {
+          label: "Desfazer",
+          onClick: () => setData(previous),
+        },
+      },
+      8000
+    );
+  }
+
+  function confirmDraftAction() {
+    const action = pendingDraftAction;
+    setPendingDraftAction(null);
+    if (!action) return;
+    applyDraftAction(action, structuredClone(data));
+  }
+
   if (!hydrated) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted">
@@ -127,8 +171,30 @@ function BuilderAppContent() {
     );
   }
 
+  const exportButtons = (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => requestExport("markdown")}
+      >
+        <FileText className="size-4" /> MD
+      </Button>
+      <Button
+        type="button"
+        size="sm"
+        onClick={() => requestExport("pdf")}
+        disabled={pdfLoading}
+      >
+        <Download className="size-4" />
+        {pdfLoading ? "Gerando…" : "PDF"}
+      </Button>
+    </>
+  );
+
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-10 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl px-4 pb-24 pt-10 sm:px-6 lg:pb-16">
       <header className="mb-10 max-w-2xl">
         <div className="flex items-center text-sm font-medium">
           <span>rochaponto</span>
@@ -167,7 +233,7 @@ function BuilderAppContent() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => loadDemo(createDemoResume())}
+            onClick={() => setPendingDraftAction("demo")}
           >
             <Play className="size-4" /> Carregar demo
           </Button>
@@ -178,7 +244,7 @@ function BuilderAppContent() {
             variant="ghost"
             size="sm"
             className="text-muted hover:text-foreground"
-            onClick={reset}
+            onClick={() => setPendingDraftAction("reset")}
           >
             <Eraser className="size-3.5" /> Limpar
           </Button>
@@ -242,25 +308,7 @@ function BuilderAppContent() {
           <div className="rounded-xl border border-border bg-elevated/80 p-4 sm:p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-lg font-medium">Preview</h2>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => requestExport("markdown")}
-                >
-                  <FileText className="size-4" /> MD
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  onClick={() => requestExport("pdf")}
-                  disabled={pdfLoading}
-                >
-                  <Download className="size-4" />
-                  {pdfLoading ? "Gerando…" : "PDF"}
-                </Button>
-              </div>
+              <div className="hidden flex-wrap gap-2 lg:flex">{exportButtons}</div>
             </div>
             <Separator className="mb-4" />
             {error ? (
@@ -293,6 +341,13 @@ function BuilderAppContent() {
             o arquivo baixado é gerado com PDFKit.
           </p>
         </aside>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-elevated/95 p-3 backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+          <p className="text-xs text-muted">Baixar currículo</p>
+          <div className="flex gap-2">{exportButtons}</div>
+        </div>
       </div>
 
       {wizardOpen ? (
@@ -334,7 +389,38 @@ function BuilderAppContent() {
         </div>
       </Dialog>
 
-      <Toast message={toast} onDismiss={dismissToast} />
+      <Dialog
+        open={pendingDraftAction !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDraftAction(null);
+        }}
+        title={
+          pendingDraftAction === "demo"
+            ? "Carregar demo?"
+            : "Limpar rascunho?"
+        }
+        description="Isso substitui o rascunho atual salvo no navegador. Você poderá desfazer por alguns segundos."
+      >
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setPendingDraftAction(null)}
+          >
+            Cancelar
+          </Button>
+          <Button type="button" onClick={confirmDraftAction}>
+            {pendingDraftAction === "demo" ? "Carregar demo" : "Limpar"}
+          </Button>
+        </div>
+      </Dialog>
+
+      <Toast
+        message={toast}
+        onDismiss={dismissToast}
+        durationMs={toastDurationMs}
+        className="bottom-20 lg:bottom-6"
+      />
     </div>
   );
 }
