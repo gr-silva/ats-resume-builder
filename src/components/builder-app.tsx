@@ -20,6 +20,10 @@ import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
+import {
+  getFirstIncompleteTab,
+  type FormTabId,
+} from "@/lib/resume/form-progress";
 import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
 import type { ResumeData } from "@/lib/resume/schema";
 import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
@@ -48,8 +52,18 @@ function BuilderAppContent() {
     useState<PendingDraftAction>(null);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [toastDurationMs, setToastDurationMs] = useState(3000);
+  const [formTab, setFormTab] = useState<FormTabId>("dados");
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
+
+  function startEditing() {
+    const nextTab = getFirstIncompleteTab(data);
+    setFormTab(nextTab);
+    document.getElementById("editor")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
 
   const showToast = useCallback(
     (message: Omit<ToastMessage, "id">, durationMs = 3000) => {
@@ -227,8 +241,8 @@ function BuilderAppContent() {
           </Badge>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
-          <Button asChild>
-            <a href="#editor">Começar</a>
+          <Button type="button" onClick={startEditing}>
+            Começar
           </Button>
           <Button
             type="button"
@@ -301,7 +315,12 @@ function BuilderAppContent() {
       >
         <section className="rounded-xl border border-border bg-elevated/80 p-4 sm:p-6">
           <h2 className="mb-4 text-lg font-medium">Seus dados</h2>
-          <ResumeForm data={data} onChange={setData} />
+          <ResumeForm
+            data={data}
+            onChange={setData}
+            tab={formTab}
+            onTabChange={setFormTab}
+          />
         </section>
 
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
