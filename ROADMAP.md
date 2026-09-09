@@ -44,13 +44,13 @@ Ordenado pelo impacto no caminho que **a maioria** usa (formulário → exportar
 Fricções que fazem o usuário desistir **antes** de exportar.
 
 - [x] Progresso / checklist de preenchimento (Dados → Resumo → Skills → Experiência…) — 6 tabs com indicador `N/6` e navegação *(2026-09-09)*
-- [ ] Empty state orientado no editor (1–2 frases + próximo passo), não só campos em branco; “Começar” hoje só rola a página
+- [x] Empty state orientado no editor (1–2 frases + próximo passo); Começar vai à primeira aba incompleta *(2026-09-09)*
 - [x] Confirmação (ou undo) em **Limpar** e **Carregar demo** — dialog + toast Desfazer *(2026-09-09)*
 - [x] CTAs de export (MD/PDF) acessíveis no mobile sem depender do aside sticky (só `lg+`) — barra fixa no rodapé abaixo de `lg` *(2026-09-09)*
-- [ ] Skills com UX de chips/tags (ou validação clara) em vez de só “itens separados por vírgula” — erro fácil de formatação e fricção desnecessária
-- [ ] Reordenar experiências / formação (subir/descer) — cronologia errada é comum e hoje exige recriar blocos
-- [ ] Suavizar jargão STAR na UI para quem não conhece o framework (dica curta expansível: Situação → Tarefa → Ação → Resultado) — sem isso a aba Experiência intimida
-- [ ] Defaults de skills menos “só eng. de software” (Linguagens / Front-end / Back-end) **ou** labels neutros no foco Geral — categorias pré-preenchidas podem afastar outros perfis
+- [x] Skills com UX de chips/tags — Enter/vírgula; schema continua `items` string *(2026-09-09)*
+- [x] Reordenar experiências / formação (subir/descer) *(2026-09-09)*
+- [x] Suavizar jargão STAR na UI — `<details>` com Situação → Tarefa → Ação → Resultado *(2026-09-09)*
+- [x] Defaults de skills neutros no foco Geral — Competências / Ferramentas / Outros *(2026-09-09)*
 
 ### 3. Nichos (Full Stack, IA, …)
 
@@ -118,7 +118,7 @@ Síntese da auditoria de produto (UI atual). Usar para priorizar issues; itens a
 | Badge “em breve” + copy desatualizada | Produto parece incompleto ou inconsistente |
 | Import sem PDF nativo | Entrada natural bloqueada; IA vira obstáculo |
 | `localStorage` silencioso | Descobre perda tarde demais; quebra confiança local-first |
-| Jargão STAR + defaults eng. | Parece só para quem já “fala ATS/tech” |
+| ~~Jargão STAR + defaults eng.~~ (feito: details + categorias neutras) | Parece só para quem já “fala ATS/tech” |
 
 Princípio: **mostrar valor em qualquer navegador em menos de 1 minuto** (preencher mínimo → ver resultado → baixar). IA e nichos só depois que esse caminho estiver óbvio e seguro.
 
