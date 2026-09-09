@@ -74,30 +74,26 @@ export function ResumeForm({ data, onChange }: Props) {
 
   return (
     <>
-    <div className="mb-3 flex flex-wrap items-center gap-2">
-      <p className="text-sm text-muted" aria-live="polite">
-        Progresso{" "}
-        <span className="font-medium text-foreground">
-          {progress.doneCount}/{progress.total}
-        </span>
-      </p>
-      <div className="flex flex-wrap gap-1" role="list" aria-label="Checklist das abas">
+    <p className="mb-3 text-sm text-muted" aria-live="polite">
+      Progresso{" "}
+      <span className="font-medium text-foreground">
+        {progress.doneCount}/{progress.total}
+      </span>
+    </p>
+    <Tabs
+      value={tab}
+      onValueChange={(value) => setTab(value as FormTabId)}
+      className="w-full"
+    >
+      <TabsList aria-label="Seções do currículo">
         {FORM_TAB_IDS.map((id) => {
           const status = progress.sections[id];
-          const active = tab === id;
           return (
-            <button
+            <TabsTrigger
               key={id}
-              type="button"
-              role="listitem"
+              value={id}
               title={`${FORM_TAB_LABELS[id]}: ${status === "done" ? "preenchido" : status === "partial" ? "parcial" : "vazio"}`}
-              aria-current={active ? "page" : undefined}
-              onClick={() => setTab(id)}
-              className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors ${
-                active
-                  ? "border-accent/50 bg-accent/10 text-foreground"
-                  : "border-border bg-background text-muted hover:text-foreground"
-              }`}
+              className="gap-1.5"
             >
               {status === "done" ? (
                 <Check className="size-3 text-accent" aria-hidden />
@@ -110,23 +106,9 @@ export function ResumeForm({ data, onChange }: Props) {
                 />
               )}
               {FORM_TAB_LABELS[id]}
-            </button>
+            </TabsTrigger>
           );
         })}
-      </div>
-    </div>
-    <Tabs
-      value={tab}
-      onValueChange={(value) => setTab(value as FormTabId)}
-      className="w-full"
-    >
-      <TabsList>
-        <TabsTrigger value="dados">Dados</TabsTrigger>
-        <TabsTrigger value="resumo">Resumo</TabsTrigger>
-        <TabsTrigger value="skills">Skills</TabsTrigger>
-        <TabsTrigger value="experiencia">Experiência</TabsTrigger>
-        <TabsTrigger value="formacao">Formação</TabsTrigger>
-        <TabsTrigger value="extra">Extra</TabsTrigger>
       </TabsList>
 
       <TabsContent value="dados" className="space-y-4">
