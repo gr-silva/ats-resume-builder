@@ -12,18 +12,18 @@ Qualquer evolução deve preservar essa promessa. Recursos que exijam guardar da
 
 ## Concluído
 
-- [x] Geração ATS (foco Geral) — formulário, Markdown e PDF
-- [x] Deploy na Vercel
-- [x] Assistente IA local (Chrome Prompt API) — wizard + importação por texto
-- [x] Revisão / reescrita STAR com IA local (perguntas, sugestões selecionáveis, preservação do texto)
-- [x] Vercel Web Analytics (métricas agregadas de acesso) + aviso de privacidade na UI e no README
+- [x] Geração ATS (foco Geral) — formulário, Markdown e PDF *(2026-08-23)*
+- [x] Deploy na Vercel *(2026-08-23)*
+- [x] Assistente IA local (Chrome Prompt API) — wizard + importação por texto *(2026-08-28)*
+- [x] Revisão / reescrita STAR com IA local (perguntas, sugestões selecionáveis, preservação do texto) *(2026-09-01)*
+- [x] Vercel Web Analytics (métricas agregadas de acesso) + aviso de privacidade na UI e no README *(2026-09-03)*
 
 ### Caminho sem IA (maioria dos usuários)
 
-- [x] Deixar óbvio que o fluxo principal (preencher + MD/PDF) funciona em qualquer navegador
-- [x] Mensagens/UX quando a IA estiver indisponível (sem parecer que o app “não funciona”)
-- [x] Revisar hierarquia de CTAs no header (Começar / formulário vs Assistente / Importar)
-- [x] Melhorias de layout e usabilidade em mobile (tabs, bullets, preview)
+- [x] Deixar óbvio que o fluxo principal (preencher + MD/PDF) funciona em qualquer navegador *(2026-09-08)*
+- [x] Mensagens/UX quando a IA estiver indisponível (sem parecer que o app “não funciona”) *(2026-09-08)*
+- [x] Revisar hierarquia de CTAs no header (Começar / formulário vs Assistente / Importar) *(2026-09-08)*
+- [x] Melhorias de layout e usabilidade em mobile (tabs, bullets, preview) *(2026-09-08)*
 
 ---
 
@@ -35,18 +35,18 @@ Ordenado pelo impacto no caminho que **a maioria** usa (formulário → exportar
 
 - [ ] Export DOCX (ATS-friendly)
 - [ ] Textos prontos para LinkedIn (sobre / experiências), gerados a partir do rascunho local — sem envio a servidor além do necessário para gerar o arquivo
-- [x] **Preview do PDF** (ou render próximo do PDF) antes do download — aside com tabs PDF | Markdown; preview HTML a partir dos mesmos blocks do PDFKit
-- [x] Aviso suave ao exportar currículo quase vazio (sem nome / sem experiência) — evita PDF inútil e sensação de “o app não funciona”
-- [x] Feedback após download (toast / estado “PDF baixado” / “Markdown baixado”)
+- [x] **Preview do PDF** (ou render próximo do PDF) antes do download — aside com tabs PDF | Markdown; preview HTML a partir dos mesmos blocks do PDFKit *(2026-09-09)*
+- [x] Aviso suave ao exportar currículo quase vazio (sem nome / sem experiência) — evita PDF inútil e sensação de “o app não funciona” *(2026-09-09)*
+- [x] Feedback após download (toast / estado “PDF baixado” / “Markdown baixado”) *(2026-09-09)*
 
 ### 2. Reduzir abandono no formulário (caminho majoritário)
 
 Fricções que fazem o usuário desistir **antes** de exportar.
 
-- [ ] Progresso / checklist de preenchimento (Dados → Resumo → Skills → Experiência…) — 6 tabs sem noção de “quanto falta” escondem o trabalho restante
+- [x] Progresso / checklist de preenchimento (Dados → Resumo → Skills → Experiência…) — 6 tabs com indicador `N/6` e navegação *(2026-09-09)*
 - [ ] Empty state orientado no editor (1–2 frases + próximo passo), não só campos em branco; “Começar” hoje só rola a página
-- [ ] Confirmação (ou undo) em **Limpar** e **Carregar demo** — um clique apaga o rascunho em `localStorage` sem volta
-- [ ] CTAs de export (MD/PDF) acessíveis no mobile sem depender do aside sticky (só `lg+`) — no telefone o download fica longe do formulário
+- [x] Confirmação (ou undo) em **Limpar** e **Carregar demo** — dialog + toast Desfazer *(2026-09-09)*
+- [x] CTAs de export (MD/PDF) acessíveis no mobile sem depender do aside sticky (só `lg+`) — barra fixa no rodapé abaixo de `lg` *(2026-09-09)*
 - [ ] Skills com UX de chips/tags (ou validação clara) em vez de só “itens separados por vírgula” — erro fácil de formatação e fricção desnecessária
 - [ ] Reordenar experiências / formação (subir/descer) — cronologia errada é comum e hoje exige recriar blocos
 - [ ] Suavizar jargão STAR na UI para quem não conhece o framework (dica curta expansível: Situação → Tarefa → Ação → Resultado) — sem isso a aba Experiência intimida
@@ -112,9 +112,9 @@ Síntese da auditoria de produto (UI atual). Usar para priorizar issues; itens a
 | Sinal | Por que o usuário pode sair |
 | --- | --- |
 | ~~Preview só em Markdown~~ (feito: tabs PDF \| Markdown) | Não “vê” o currículo final; PDF é caixa-preta |
-| Tabs sem progresso | Formulário longo sem mapa mental; Experiência (valor ATS) fica escondida |
-| Limpar / demo sem undo | Medo de perder rascunho → evita explorar |
-| Mobile: PDF longe | Valor (download) abaixo de muito formulário |
+| ~~Tabs sem progresso~~ (feito: checklist N/6) | Formulário longo sem mapa mental; Experiência (valor ATS) fica escondida |
+| ~~Limpar / demo sem undo~~ (feito: dialog + Desfazer) | Medo de perder rascunho → evita explorar |
+| ~~Mobile: PDF longe~~ (feito: barra sticky) | Valor (download) abaixo de muito formulário |
 | Badge “em breve” + copy desatualizada | Produto parece incompleto ou inconsistente |
 | Import sem PDF nativo | Entrada natural bloqueada; IA vira obstáculo |
 | `localStorage` silencioso | Descobre perda tarde demais; quebra confiança local-first |
@@ -148,3 +148,4 @@ Até lá, **sync na nuvem permanece fora do roadmap ativo**.
 
 - Issues e PRs de produto devem referenciar itens daqui
 - O [README](README.md) resume o que o app faz hoje; o planejamento vive neste arquivo
+- Ao marcar um item como feito (`[x]`), acrescente a data ISO no final: `*(YYYY-MM-DD)*` — facilita changelog e posts de evolução
