@@ -74,9 +74,9 @@ export function createEmptyResume(): ResumeData {
     portfolio: "",
     summary: "",
     skillCategories: [
-      { id: cryptoRandomId(), name: "Linguagens", items: "" },
-      { id: cryptoRandomId(), name: "Front-end", items: "" },
-      { id: cryptoRandomId(), name: "Back-end e Cloud", items: "" },
+      { id: cryptoRandomId(), name: "Competências", items: "" },
+      { id: cryptoRandomId(), name: "Ferramentas", items: "" },
+      { id: cryptoRandomId(), name: "Outros", items: "" },
     ],
     experiences: [
       {
