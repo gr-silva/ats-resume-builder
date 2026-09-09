@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createDemoResume } from "@/lib/resume/demo";
-import { getFormProgress } from "@/lib/resume/form-progress";
+import {
+  getFirstIncompleteTab,
+  getFormProgress,
+} from "@/lib/resume/form-progress";
 import { createEmptyResume } from "@/lib/resume/schema";
 
 describe("getFormProgress", () => {
@@ -41,5 +44,12 @@ describe("getFormProgress", () => {
     const data = createEmptyResume();
     data.experiences[0]!.bullets = ["Delivered a feature"];
     expect(getFormProgress(data).sections.experiencia).toBe("done");
+  });
+
+  it("returns the first incomplete tab for Começar", () => {
+    expect(getFirstIncompleteTab(createEmptyResume())).toBe("dados");
+    const withName = createEmptyResume();
+    withName.name = "Alex";
+    expect(getFirstIncompleteTab(withName)).toBe("resumo");
   });
 });
