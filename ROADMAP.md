@@ -35,9 +35,9 @@ Ordenado pelo impacto no caminho que **a maioria** usa (formulário → exportar
 
 - [ ] Export DOCX (ATS-friendly)
 - [ ] Textos prontos para LinkedIn (sobre / experiências), gerados a partir do rascunho local — sem envio a servidor além do necessário para gerar o arquivo
-- [ ] **Preview do PDF** (ou render próximo do PDF) antes do download — hoje o aside mostra só Markdown; quem busca currículo “pronto” não vê o entregável principal até baixar
-- [ ] Aviso suave ao exportar currículo quase vazio (sem nome / sem experiência) — evita PDF inútil e sensação de “o app não funciona”
-- [ ] Feedback após download (toast / estado “PDF baixado”) — o clique hoje é silencioso
+- [x] **Preview do PDF** (ou render próximo do PDF) antes do download — aside com tabs PDF | Markdown; preview HTML a partir dos mesmos blocks do PDFKit
+- [x] Aviso suave ao exportar currículo quase vazio (sem nome / sem experiência) — evita PDF inútil e sensação de “o app não funciona”
+- [x] Feedback após download (toast / estado “PDF baixado” / “Markdown baixado”)
 
 ### 2. Reduzir abandono no formulário (caminho majoritário)
 
@@ -111,7 +111,7 @@ Síntese da auditoria de produto (UI atual). Usar para priorizar issues; itens a
 
 | Sinal | Por que o usuário pode sair |
 | --- | --- |
-| Preview só em Markdown | Não “vê” o currículo final; PDF é caixa-preta |
+| ~~Preview só em Markdown~~ (feito: tabs PDF \| Markdown) | Não “vê” o currículo final; PDF é caixa-preta |
 | Tabs sem progresso | Formulário longo sem mapa mental; Experiência (valor ATS) fica escondida |
 | Limpar / demo sem undo | Medo de perder rascunho → evita explorar |
 | Mobile: PDF longe | Valor (download) abaixo de muito formulário |
