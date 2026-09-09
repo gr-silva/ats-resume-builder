@@ -14,12 +14,18 @@ import {
 } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import {
+  FORM_TAB_IDS,
+  FORM_TAB_LABELS,
+  getFormProgress,
+  type FormTabId,
+} from "@/lib/resume/form-progress";
+import {
   cryptoRandomId,
   type Experience,
   type ResumeData,
 } from "@/lib/resume/schema";
-import { Plus, Sparkles, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Check, Plus, Sparkles, Trash2 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 type StarReviewTarget = {
   expIndex: number;
@@ -50,6 +56,8 @@ function Field({
 export function ResumeForm({ data, onChange }: Props) {
   const { isSupported, checking } = useChromeAiContext();
   const [starReview, setStarReview] = useState<StarReviewTarget | null>(null);
+  const [tab, setTab] = useState<FormTabId>("dados");
+  const progress = useMemo(() => getFormProgress(data), [data]);
 
   const update = <K extends keyof ResumeData>(key: K, value: ResumeData[K]) => {
     onChange({ ...data, [key]: value });
@@ -66,7 +74,52 @@ export function ResumeForm({ data, onChange }: Props) {
 
   return (
     <>
-    <Tabs defaultValue="dados" className="w-full">
+    <div className="mb-3 flex flex-wrap items-center gap-2">
+      <p className="text-sm text-muted" aria-live="polite">
+        Progresso{" "}
+        <span className="font-medium text-foreground">
+          {progress.doneCount}/{progress.total}
+        </span>
+      </p>
+      <div className="flex flex-wrap gap-1" role="list" aria-label="Checklist das abas">
+        {FORM_TAB_IDS.map((id) => {
+          const status = progress.sections[id];
+          const active = tab === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              role="listitem"
+              title={`${FORM_TAB_LABELS[id]}: ${status === "done" ? "preenchido" : status === "partial" ? "parcial" : "vazio"}`}
+              aria-current={active ? "page" : undefined}
+              onClick={() => setTab(id)}
+              className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs transition-colors ${
+                active
+                  ? "border-accent/50 bg-accent/10 text-foreground"
+                  : "border-border bg-background text-muted hover:text-foreground"
+              }`}
+            >
+              {status === "done" ? (
+                <Check className="size-3 text-accent" aria-hidden />
+              ) : (
+                <span
+                  className={`size-1.5 rounded-full ${
+                    status === "partial" ? "bg-text-secondary" : "bg-border"
+                  }`}
+                  aria-hidden
+                />
+              )}
+              {FORM_TAB_LABELS[id]}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+    <Tabs
+      value={tab}
+      onValueChange={(value) => setTab(value as FormTabId)}
+      className="w-full"
+    >
       <TabsList>
         <TabsTrigger value="dados">Dados</TabsTrigger>
         <TabsTrigger value="resumo">Resumo</TabsTrigger>
