@@ -7,17 +7,22 @@ import {
   useChromeAiContext,
 } from "@/components/ai-assistant/chrome-ai-provider";
 import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
+import { ResumePdfPreview } from "@/components/resume-pdf-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toast, type ToastMessage } from "@/components/ui/toast";
 import { PrivacyNotice } from "@/components/privacy-notice";
 import { ResumeForm } from "@/components/resume-form";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
+import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
 import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export function BuilderApp() {
   return (
@@ -27,6 +32,8 @@ export function BuilderApp() {
   );
 }
 
+type PendingExport = "pdf" | "markdown" | null;
+
 function BuilderAppContent() {
   const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
   const { isSupported, checking } = useChromeAiContext();
@@ -34,10 +41,20 @@ function BuilderAppContent() {
   const [error, setError] = useState<string | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [pendingExport, setPendingExport] = useState<PendingExport>(null);
+  const [toast, setToast] = useState<ToastMessage | null>(null);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
-  async function downloadPdf() {
+  const showToast = useCallback((text: string) => {
+    setToast({ id: Date.now(), text });
+  }, []);
+
+  const dismissToast = useCallback(() => {
+    setToast(null);
+  }, []);
+
+  async function runPdfDownload() {
     setError(null);
     setPdfLoading(true);
     try {
@@ -61,6 +78,7 @@ function BuilderAppContent() {
       a.download = `${(data.name || "curriculo").trim() || "curriculo"}-ATS-Geral.pdf`;
       a.click();
       URL.revokeObjectURL(url);
+      showToast("PDF baixado");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro ao baixar PDF.");
     } finally {
@@ -68,7 +86,7 @@ function BuilderAppContent() {
     }
   }
 
-  function downloadMarkdown() {
+  function runMarkdownDownload() {
     const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -76,6 +94,29 @@ function BuilderAppContent() {
     a.download = `${(data.name || "curriculo").trim() || "curriculo"}-ATS-Geral.md`;
     a.click();
     URL.revokeObjectURL(url);
+    showToast("Markdown baixado");
+  }
+
+  function requestExport(kind: "pdf" | "markdown") {
+    if (isResumeTooEmpty(data)) {
+      setPendingExport(kind);
+      return;
+    }
+    if (kind === "pdf") {
+      void runPdfDownload();
+    } else {
+      runMarkdownDownload();
+    }
+  }
+
+  function confirmEmptyExport() {
+    const kind = pendingExport;
+    setPendingExport(null);
+    if (kind === "pdf") {
+      void runPdfDownload();
+    } else if (kind === "markdown") {
+      runMarkdownDownload();
+    }
   }
 
   if (!hydrated) {
@@ -200,20 +241,20 @@ function BuilderAppContent() {
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <div className="rounded-xl border border-border bg-elevated/80 p-4 sm:p-6">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-medium">Preview Markdown</h2>
+              <h2 className="text-lg font-medium">Preview</h2>
               <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={downloadMarkdown}
+                  onClick={() => requestExport("markdown")}
                 >
                   <FileText className="size-4" /> MD
                 </Button>
                 <Button
                   type="button"
                   size="sm"
-                  onClick={downloadPdf}
+                  onClick={() => requestExport("pdf")}
                   disabled={pdfLoading}
                 >
                   <Download className="size-4" />
@@ -225,9 +266,21 @@ function BuilderAppContent() {
             {error ? (
               <p className="mb-3 text-sm text-accent">{error}</p>
             ) : null}
-            <pre className="max-h-[70vh] overflow-auto overflow-x-auto whitespace-pre-wrap rounded-lg border border-border bg-background p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4">
-              {markdown.trim() || "Preencha o formulário para ver o preview."}
-            </pre>
+            <Tabs defaultValue="pdf">
+              <TabsList className="w-auto">
+                <TabsTrigger value="pdf">PDF</TabsTrigger>
+                <TabsTrigger value="markdown">Markdown</TabsTrigger>
+              </TabsList>
+              <TabsContent value="pdf" className="mt-3">
+                <ResumePdfPreview data={data} focus="geral" />
+              </TabsContent>
+              <TabsContent value="markdown" className="mt-3">
+                <pre className="max-h-[70vh] overflow-auto overflow-x-auto whitespace-pre-wrap rounded-lg border border-border bg-background p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4">
+                  {markdown.trim() ||
+                    "Preencha o formulário para ver o preview."}
+                </pre>
+              </TabsContent>
+            </Tabs>
           </div>
           <AiSetupPanel />
           <p className="text-xs text-muted">
@@ -236,7 +289,8 @@ function BuilderAppContent() {
             opcional processa dados localmente no Chrome (Gemini Nano) — conteúdo
             do currículo e respostas da IA não vão para API externa nem banco.
             Usamos Vercel Web Analytics só para visitas/páginas agregadas, sem
-            analisar o texto preenchido.
+            analisar o texto preenchido. O preview PDF é uma aproximação visual;
+            o arquivo baixado é gerado com PDFKit.
           </p>
         </aside>
       </div>
@@ -257,6 +311,30 @@ function BuilderAppContent() {
           onApply={setData}
         />
       ) : null}
+
+      <Dialog
+        open={pendingExport !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingExport(null);
+        }}
+        title="Currículo quase vazio"
+        description="Falta nome ou experiência com conteúdo. O arquivo pode ficar sem utilidade para um ATS."
+      >
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setPendingExport(null)}
+          >
+            Continuar preenchendo
+          </Button>
+          <Button type="button" onClick={confirmEmptyExport}>
+            Baixar mesmo assim
+          </Button>
+        </div>
+      </Dialog>
+
+      <Toast message={toast} onDismiss={dismissToast} />
     </div>
   );
 }
