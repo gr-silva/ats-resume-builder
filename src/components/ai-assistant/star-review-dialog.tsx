@@ -5,6 +5,7 @@ import { AiPrepareButton } from "@/components/ai-assistant/ai-prepare-button";
 import { useChromeAiContext } from "@/components/ai-assistant/chrome-ai-provider";
 import { ProviderStatus } from "@/components/ai-assistant/provider-status";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -572,7 +573,8 @@ export function StarReviewDialog({
               Responda as perguntas e marque as sugestões que devem entrar na
               reescrita. Você pode pular uma pergunta se não tiver o dado.
             </p>
-            <div className="max-h-[50vh] space-y-5 overflow-y-auto pr-1">
+            <ScrollArea viewportClassName="max-h-[50vh]">
+            <div className="space-y-5 pr-3">
               {bulletGroups.map(({ bulletIndex: bi, questions, analysis }) => {
                 const showBullet = expandedBullets[bi] ?? false;
                 const bulletText = getBulletOriginalText(
@@ -687,6 +689,7 @@ export function StarReviewDialog({
                 );
               })}
             </div>
+            </ScrollArea>
             {error ? <p className="text-sm text-accent">{error}</p> : null}
             <div className="space-y-2">
               {mode === "experience" ? (
@@ -717,7 +720,8 @@ export function StarReviewDialog({
 
         {step === "review" ? (
           <>
-            <div className="max-h-[50vh] space-y-4 overflow-y-auto pr-1">
+            <ScrollArea viewportClassName="max-h-[50vh]">
+            <div className="space-y-4 pr-3">
               {rewrites.map((rewrite) => {
                 const analysis = analyses.find(
                   (a) => a.bulletIndex === rewrite.bulletIndex
@@ -768,6 +772,7 @@ export function StarReviewDialog({
                 );
               })}
             </div>
+            </ScrollArea>
             <p className="text-xs text-muted">
               Revise antes de aplicar. Só estes bullets serão atualizados no
               formulário.

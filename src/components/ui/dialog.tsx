@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { useEffect, useRef, type ReactNode } from "react";
@@ -37,7 +38,7 @@ export function Dialog({
     <dialog
       ref={dialogRef}
       className={cn(
-        "fixed inset-0 z-50 m-auto w-[calc(100%-2rem)] max-w-lg rounded-xl border border-border bg-elevated p-0 text-foreground shadow-xl backdrop:bg-black/60 open:flex open:max-h-[90vh] open:flex-col",
+        "fixed inset-0 z-50 m-auto w-[calc(100%-2rem)] max-w-lg overflow-hidden rounded-xl border border-border bg-elevated p-0 text-foreground shadow-xl backdrop:bg-black/60 open:flex open:max-h-[90vh] open:flex-col",
         className
       )}
       onClose={() => onOpenChange(false)}
@@ -61,7 +62,9 @@ export function Dialog({
           <X className="size-5" />
         </button>
       </div>
-      <div className="overflow-y-auto px-5 py-4">{children}</div>
+      <ScrollArea viewportClassName="max-h-[calc(90vh-7.5rem)]">
+        <div className="px-5 py-4">{children}</div>
+      </ScrollArea>
     </dialog>
   );
 }
