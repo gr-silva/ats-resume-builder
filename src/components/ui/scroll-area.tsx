@@ -13,7 +13,7 @@ type ScrollAreaProps = React.ComponentPropsWithoutRef<
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
   ScrollAreaProps
->(({ className, viewportClassName, children, type = "auto", ...props }, ref) => (
+>(({ className, viewportClassName, children, type = "scroll", ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
     type={type}
