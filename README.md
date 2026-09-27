@@ -1,15 +1,24 @@
-# ATS Resume Builder
+# Passou
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CI](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml)
 
-Gerador **gratuito e open source** de currículos otimizados para ATS (Markdown + PDF).
+Gerador **gratuito e open source** de currículos que passam na triagem (ATS), em Markdown e PDF.
 
 **App:** [ats-resume-builder-topaz.vercel.app](https://ats-resume-builder-topaz.vercel.app)
 
 Preencha os campos base na web, visualize o Markdown e baixe o PDF — **foco Geral** no MVP.
 
 Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Design Kit (dark + accent `#EF4444`).
+
+## Nome
+
+O nome público é **Passou**. **ATS Resume Builder** lia como especificação de repositório: inglês, sigla de triagem e “builder” genérico. Quem indica o site precisa de uma palavra só, fácil de repetir, com cara de marca, e que já sugira um currículo que passa na triagem.
+
+- **Passou** fica no título da página, na aba do navegador e nos textos de apresentação.
+- **rochapontodev** continua como assinatura, acima do nome. Rocha não entra no nome do produto: a indicação não pode depender de quem já conhece o autor.
+- **ATS** permanece na linha de apoio e na descrição da página, para quem busca o termo.
+- Repositório, pacote e chaves de `localStorage` continuam `ats-resume-builder`.
 
 ## Escopo do MVP
 

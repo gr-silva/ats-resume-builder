@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ATS Resume Builder",
+  title: "Passou",
   description:
-    "Gere currículos ATS gratuitos (Markdown + PDF). Foco Geral — nichos e IA em breve. Por rochapontodev.",
+    "Currículo que passa na triagem (ATS). Markdown e PDF, sem cadastro. Por rochapontodev.",
 };
 
 export default function RootLayout({

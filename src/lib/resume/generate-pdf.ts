@@ -21,7 +21,7 @@ export async function generatePdfBuffer(
       },
       info: {
         Title: `${data.name || "Curriculo"} - ATS`,
-        Author: data.name || "ATS Resume Builder",
+        Author: data.name || "Passou",
       },
     });
 

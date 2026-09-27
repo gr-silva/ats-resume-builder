@@ -1,6 +1,6 @@
 # Contribuindo
 
-Obrigado por considerar contribuir com o **ATS Resume Builder**.
+Obrigado por considerar contribuir com o **Passou**.
 
 ## Código de conduta
 
