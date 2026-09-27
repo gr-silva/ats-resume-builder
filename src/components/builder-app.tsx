@@ -11,6 +11,7 @@ import { ResumePdfPreview } from "@/components/resume-pdf-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toast, type ToastMessage } from "@/components/ui/toast";
@@ -340,10 +341,15 @@ function BuilderAppContent() {
                 <ResumePdfPreview data={data} focus="geral" />
               </TabsContent>
               <TabsContent value="markdown" className="mt-3">
-                <pre className="max-h-[70vh] overflow-auto overflow-x-auto whitespace-pre-wrap rounded-lg border border-border bg-background p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4">
-                  {markdown.trim() ||
-                    "Preencha o formulário para ver o preview."}
-                </pre>
+                <ScrollArea
+                  className="rounded-lg border border-border bg-background"
+                  viewportClassName="max-h-[70vh]"
+                >
+                  <pre className="whitespace-pre-wrap p-3 font-mono text-xs leading-relaxed text-text-secondary sm:p-4">
+                    {markdown.trim() ||
+                      "Preencha o formulário para ver o preview."}
+                  </pre>
+                </ScrollArea>
               </TabsContent>
             </Tabs>
           </div>

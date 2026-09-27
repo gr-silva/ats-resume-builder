@@ -1,5 +1,6 @@
 "use client";
 
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { buildBlocks, type ResumeBlock } from "@/lib/resume/build-blocks";
 import { COLORS, TYPE } from "@/lib/resume/pdf-config";
 import type { FocusId, ResumeData } from "@/lib/resume/schema";
@@ -194,21 +195,26 @@ export function ResumePdfPreview({
   }
 
   return (
-    <div className="max-h-[70vh] overflow-auto rounded-lg border border-border bg-neutral-600/40 p-3 sm:p-4">
-      <div
-        className="mx-auto w-full max-w-[210mm] origin-top bg-white shadow-md"
-        style={{
-          color: COLORS.text,
-          fontFamily: "Helvetica, Arial, sans-serif",
-          padding: "42px 48px",
-          minHeight: "297mm",
-        }}
-        aria-label="Preview aproximado do PDF"
-      >
-        {blocks.map((block, index) => (
-          <BlockView key={`${block.type}-${index}`} block={block} />
-        ))}
+    <ScrollArea
+      className="rounded-lg border border-border bg-neutral-600/40"
+      viewportClassName="max-h-[70vh]"
+    >
+      <div className="p-3 sm:p-4">
+        <div
+          className="mx-auto w-full max-w-[210mm] origin-top bg-white shadow-md"
+          style={{
+            color: COLORS.text,
+            fontFamily: "Helvetica, Arial, sans-serif",
+            padding: "42px 48px",
+            minHeight: "297mm",
+          }}
+          aria-label="Preview aproximado do PDF"
+        >
+          {blocks.map((block, index) => (
+            <BlockView key={`${block.type}-${index}`} block={block} />
+          ))}
+        </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 }
