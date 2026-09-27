@@ -215,12 +215,10 @@ function BuilderAppContent() {
           <span className="text-accent">dev</span>
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          ATS Resume Builder
+          Passou
         </h1>
         <p className="mt-3 text-base text-text-secondary">
-          Preencha o formulário e baixe Markdown ou PDF em qualquer navegador —
-          foco Geral, gratuito, sem cadastro. Assistente IA é opcional (Chrome
-          desktop).
+          Currículo que passa na triagem. Markdown e PDF, sem cadastro.
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Badge className="border-accent/40 bg-accent/10 text-accent">
