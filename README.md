@@ -1,9 +1,19 @@
-# Passou
+<h1 align="center">Passou</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml)
+<p align="center">
+  <img src="./public/passaru-mascot.png" alt="Passaru, mascote do Passou" width="150">
+</p>
 
-Gerador **gratuito e open source** de currículos que passam na triagem (ATS), em Markdown e PDF.
+<p align="center">
+  <em>Gerador gratuito e open source de currículos que passam na triagem (ATS), em Markdown e PDF.</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+  <a href="https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml"><img src="https://github.com/gr-silva/ats-resume-builder/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
+
+---
 
 **App:** [ats-resume-builder-topaz.vercel.app](https://ats-resume-builder-topaz.vercel.app)
 
