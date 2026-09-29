@@ -21,6 +21,16 @@ Preencha os campos base na web, visualize o Markdown e baixe o PDF — **foco Ge
 
 Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Design Kit (dark + accent `#EF4444`).
 
+## Preview
+
+<p align="center">
+  <video src="./docs/media/passou-demo.webm" width="800" controls>
+    Demo: cada aba do formulário (demo Alex Rivera) + preview PDF e Markdown
+  </video>
+</p>
+
+Capturas por aba e mobile: [`docs/media/`](docs/media/).
+
 ## Nome
 
 O nome público é **Passou**. **ATS Resume Builder** lia como especificação de repositório: inglês, sigla de triagem e “builder” genérico. Quem indica o site precisa de uma palavra só, fácil de repetir, com cara de marca, e que já sugira um currículo que passa na triagem.
