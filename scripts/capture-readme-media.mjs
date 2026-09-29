@@ -29,8 +29,8 @@ const ROOT = path.join(__dirname, "..");
 const MEDIA_DIR = path.join(ROOT, "docs", "media");
 
 const APP_URL =
-  process.env.APP_URL ?? "https://ats-resume-builder-topaz.vercel.app";
-const FALLBACK_APP_URL = "https://rocha-resume-builder.vercel.app";
+  process.env.APP_URL ?? "https://rocha-resume-builder.vercel.app";
+const FALLBACK_APP_URL = "https://ats-resume-builder-topaz.vercel.app";
 const GITHUB_README =
   "https://github.com/gr-silva/ats-resume-builder#readme";
 const SKIP_README_CAPTURE = process.env.SKIP_README_CAPTURE === "1";

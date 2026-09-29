@@ -15,7 +15,7 @@
 
 ---
 
-**App:** [ats-resume-builder-topaz.vercel.app](https://ats-resume-builder-topaz.vercel.app)
+**[Live demo →](https://rocha-resume-builder.vercel.app)** — abra e teste no navegador, sem cadastro.
 
 Preencha os campos base na web, visualize o Markdown e baixe o PDF — **foco Geral** no MVP.
 
