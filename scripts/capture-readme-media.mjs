@@ -325,13 +325,16 @@ function findFfmpegExecutable() {
   return "ffmpeg";
 }
 
-/** Playwright records WebM; convert to MP4 (H.264) for broader playback. */
-async function convertWebmToMp4(webmPath, mp4Path) {
+/** Playwright records WebM; convert to MP4 (H.264) for broader playback.
+ *  Skips the opening load flash so the first frame (and video thumbnails) show the UI. */
+async function convertWebmToMp4(webmPath, mp4Path, { startSeconds = 2 } = {}) {
   const ffmpeg = findFfmpegExecutable();
   await execFileAsync(
     ffmpeg,
     [
       "-y",
+      "-ss",
+      String(startSeconds),
       "-i",
       webmPath,
       "-c:v",
@@ -375,7 +378,12 @@ async function captureAppVideo(browser, appUrl) {
   const page = await context.newPage();
 
   await page.goto(appUrl, { waitUntil: "networkidle", timeout: 120_000 });
-  await pause(page, 1500);
+  await page.getByRole("heading", { name: "Passou", exact: true }).waitFor({
+    state: "visible",
+    timeout: 60_000,
+  });
+  // Hold on the loaded UI so, after trimming the load flash, the first frames are usable.
+  await pause(page, 2000);
 
   await page.getByRole("button", { name: /^Começar$/i }).click();
   await pause(page, 1200);
