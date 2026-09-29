@@ -5,8 +5,7 @@
  *   npx playwright install chromium && npm run build && npm run start
  *   APP_URL=http://127.0.0.1:3000 npm run capture:media
  *
- * Demo video: Playwright records WebM, then ffmpeg-static converts to H.264 MP4
- * (skips the opening load flash so the first frame / thumbnail shows the UI).
+ * Demo: WebM → MP4 (LinkedIn) + GIF (GitHub README). Assets stay under docs/media/.
  *
  * Env:
  *   APP_URL — app base URL (default production)
@@ -14,7 +13,7 @@
  */
 import { chromium } from "playwright";
 import { existsSync, readdirSync } from "node:fs";
-import { mkdir, readdir, unlink, copyFile } from "node:fs/promises";
+import { mkdir, readdir, unlink } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
@@ -358,6 +357,19 @@ async function convertWebmToMp4(webmPath, mp4Path, { startSeconds = 2 } = {}) {
   );
 }
 
+/** GIF for GitHub README (renders as an image; stays in-repo like LocalStudio). */
+async function convertMp4ToGif(mp4Path, gifPath) {
+  const ffmpeg = findFfmpegExecutable();
+  // Two-pass palette keeps size reasonable for README (~fps 6, width 640).
+  const vf =
+    "fps=6,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=64:stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5";
+  await execFileAsync(
+    ffmpeg,
+    ["-y", "-i", mp4Path, "-vf", vf, "-loop", "0", gifPath],
+    { maxBuffer: 40 * 1024 * 1024 },
+  );
+}
+
 async function removePlaywrightVideoArtifacts() {
   const entries = await readdir(MEDIA_DIR);
   await Promise.all(
@@ -432,12 +444,12 @@ async function captureAppVideo(browser, appUrl) {
   if (video) {
     const webmPath = path.join(MEDIA_DIR, "passou-demo.webm");
     const mp4Path = path.join(MEDIA_DIR, "passou-demo.mp4");
-    const publicMp4Path = path.join(ROOT, "public", "passou-demo.mp4");
+    const gifPath = path.join(MEDIA_DIR, "passou-demo.gif");
     await video.saveAs(webmPath);
     console.log("  converting WebM → MP4…");
     await convertWebmToMp4(webmPath, mp4Path);
-    await copyFile(mp4Path, publicMp4Path);
-    console.log("  copied to public/passou-demo.mp4 (Vercel CDN for README link)");
+    console.log("  converting MP4 → GIF (README)…");
+    await convertMp4ToGif(mp4Path, gifPath);
   }
   await removePlaywrightVideoArtifacts();
 }

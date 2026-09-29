@@ -8,13 +8,14 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MEDIA = path.join(ROOT, "docs", "media");
-const PUBLIC_DEMO = path.join(ROOT, "public", "passou-demo.mp4");
 
 const MIN_MP4_BYTES = 100 * 1024;
+const MIN_GIF_BYTES = 100 * 1024;
 
 /** @type {{ file: string, width?: number, height?: number, minBytes?: number }[]} */
 const REQUIRED = [
   { file: "passou-demo.mp4", minBytes: MIN_MP4_BYTES },
+  { file: "passou-demo.gif", minBytes: MIN_GIF_BYTES },
   { file: "passou-mobile.png", width: 390, height: 844 },
   { file: "passou-tab-dados.png", width: 1280, height: 720 },
   { file: "passou-tab-resumo.png", width: 1280, height: 720 },
@@ -80,15 +81,7 @@ function assertMedia() {
     process.exit(1);
   }
 
-  if (!existsSync(PUBLIC_DEMO) || statSync(PUBLIC_DEMO).size < MIN_MP4_BYTES) {
-    console.error(
-      "missing or too small: public/passou-demo.mp4 (needed for README demo link on Vercel)",
-    );
-    process.exit(1);
-  }
-
   console.log("docs/media OK (required files, sizes, PNG dimensions).");
-  console.log("public/passou-demo.mp4 OK.");
 }
 
 assertMedia();
