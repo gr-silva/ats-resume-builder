@@ -23,7 +23,9 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 
 ## Preview
 
-![Demo do Passou](./docs/media/passou-demo.gif)
+<p align="center">
+  <img src="./docs/media/passou-demo.gif" alt="Demo do Passou" width="100%">
+</p>
 
 MP4 (LinkedIn / download): [`docs/media/passou-demo.mp4`](./docs/media/passou-demo.mp4) · Capturas por aba e mobile: [`docs/media/`](docs/media/).
 
