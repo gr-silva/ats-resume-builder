@@ -23,19 +23,20 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 
 ## Preview
 
+<!-- GitHub strips <video src="./..."> from READMEs; only user-attachments CDN URLs survive.
+     Click-to-play: poster opens the MP4 on GitHub’s file viewer (native player). -->
 <p align="center">
-  <video
-    src="./docs/media/passou-demo.mp4"
-    poster="./docs/media/passou-tab-dados.png"
-    width="800"
-    controls
-    preload="metadata"
-  >
-    Demo: cada aba do formulário (demo Alex Rivera) + preview PDF e Markdown
-  </video>
+  <a href="./docs/media/passou-demo.mp4">
+    <img src="./docs/media/passou-tab-dados.png" alt="Demo do Passou — clique para assistir" width="800">
+  </a>
 </p>
 
-Capturas por aba e mobile: [`docs/media/`](docs/media/).
+<p align="center">
+  <a href="./docs/media/passou-demo.mp4">▶ Assistir demo (MP4)</a>
+  ·
+  Capturas por aba e mobile: <a href="./docs/media/">docs/media/</a>
+</p>
+
 Após mudanças de UI, regenere localmente com `npm run capture:media` e inclua `docs/media/` no mesmo PR — o CI valida arquivos, dimensões e esse lembrete.
 
 ## Nome
