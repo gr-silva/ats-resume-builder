@@ -36,6 +36,7 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 </p>
 
 Capturas por aba e mobile: [`docs/media/`](docs/media/).
+Após mudanças de UI, regenere localmente com `npm run capture:media` e inclua `docs/media/` no mesmo PR — o CI valida arquivos, dimensões e esse lembrete.
 
 ## Nome
 

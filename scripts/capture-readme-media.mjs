@@ -1,14 +1,16 @@
 /**
- * Captures README (GitHub), full-page form tab screenshots, mobile, and demo video.
+ * Captures README (GitHub), form-tab screenshots, mobile, and demo video.
  *
- * Local: npx playwright install chromium && npm run build && npm run start
- *        APP_URL=http://127.0.0.1:3000 npm run capture:media
+ * Run locally after UI changes (CI does not regenerate — it only validates):
+ *   npx playwright install chromium && npm run build && npm run start
+ *   APP_URL=http://127.0.0.1:3000 npm run capture:media
  *
- * Demo video: Playwright records WebM, then ffmpeg-static converts to H.264 MP4.
+ * Demo video: Playwright records WebM, then ffmpeg-static converts to H.264 MP4
+ * (skips the opening load flash so the first frame / thumbnail shows the UI).
  *
  * Env:
- *   APP_URL — app base URL (default production; CI should use localhost after build)
- *   SKIP_README_CAPTURE=1 — skip GitHub README screenshot (use in CI)
+ *   APP_URL — app base URL (default production)
+ *   SKIP_README_CAPTURE=1 — skip GitHub README screenshot
  */
 import { chromium } from "playwright";
 import { existsSync, readdirSync } from "node:fs";
