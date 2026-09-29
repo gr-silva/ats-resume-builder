@@ -24,7 +24,7 @@ Identidade visual: [rochapontodev](https://rochapontodev.vercel.app) / Rocha Des
 ## Preview
 
 <p align="center">
-  <video src="./docs/media/passou-demo.webm" width="800" controls>
+  <video src="./docs/media/passou-demo.mp4" width="800" controls>
     Demo: cada aba do formulário (demo Alex Rivera) + preview PDF e Markdown
   </video>
 </p>

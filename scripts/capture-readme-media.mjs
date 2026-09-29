@@ -1,8 +1,10 @@
 /**
  * Captures README (GitHub), full-page form tab screenshots, mobile, and demo video.
  *
- * Local: npx playwright install chromium ffmpeg && npm run build && npm run start
+ * Local: npx playwright install chromium && npm run build && npm run start
  *        APP_URL=http://127.0.0.1:3000 npm run capture:media
+ *
+ * Demo video: Playwright records WebM, then ffmpeg-static converts to H.264 MP4.
  *
  * Env:
  *   APP_URL — app base URL (default production; CI should use localhost after build)
@@ -11,9 +13,15 @@
 import { chromium } from "playwright";
 import { existsSync, readdirSync } from "node:fs";
 import { mkdir, readdir, unlink } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { createRequire } from "node:module";
+import { promisify } from "node:util";
 import { homedir, platform } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
+const execFileAsync = promisify(execFile);
+const require = createRequire(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
@@ -41,6 +49,7 @@ const LEGACY_MEDIA = [
   "passou-app-form-demo.png",
   "passou-app-pdf-preview.png",
   "passou-app-mobile.png",
+  "passou-demo.webm",
 ];
 
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 };
@@ -285,11 +294,68 @@ async function captureMobileScreenshot(page, appUrl) {
   console.log("  mobile");
 }
 
+function findFfmpegExecutable() {
+  try {
+    // Prefer full ffmpeg (H.264/MP4). Playwright's bundled build only does WebM/VP8.
+    const ffmpegStatic = require("ffmpeg-static");
+    if (typeof ffmpegStatic === "string" && existsSync(ffmpegStatic)) {
+      return ffmpegStatic;
+    }
+  } catch {
+    /* optional */
+  }
+
+  const cacheRoot = playwrightCacheRoot();
+  if (existsSync(cacheRoot)) {
+    const dirs = readdirSync(cacheRoot)
+      .filter((name) => /^ffmpeg-\d+$/.test(name))
+      .sort((a, b) => Number(b.split("-")[1]) - Number(a.split("-")[1]));
+    for (const dir of dirs) {
+      const candidates = [
+        path.join(cacheRoot, dir, "ffmpeg-mac"),
+        path.join(cacheRoot, dir, "ffmpeg-linux"),
+        path.join(cacheRoot, dir, "ffmpeg-win64.exe"),
+        path.join(cacheRoot, dir, "ffmpeg"),
+      ];
+      for (const candidate of candidates) {
+        if (existsSync(candidate)) return candidate;
+      }
+    }
+  }
+  return "ffmpeg";
+}
+
+/** Playwright records WebM; convert to MP4 (H.264) for broader playback. */
+async function convertWebmToMp4(webmPath, mp4Path) {
+  const ffmpeg = findFfmpegExecutable();
+  await execFileAsync(
+    ffmpeg,
+    [
+      "-y",
+      "-i",
+      webmPath,
+      "-c:v",
+      "libx264",
+      "-pix_fmt",
+      "yuv420p",
+      "-movflags",
+      "+faststart",
+      "-an",
+      mp4Path,
+    ],
+    { maxBuffer: 20 * 1024 * 1024 },
+  );
+}
+
 async function removePlaywrightVideoArtifacts() {
   const entries = await readdir(MEDIA_DIR);
   await Promise.all(
     entries
-      .filter((name) => name.startsWith("page@") && name.endsWith(".webm"))
+      .filter(
+        (name) =>
+          (name.startsWith("page@") && name.endsWith(".webm")) ||
+          name === "passou-demo.webm",
+      )
       .map((name) => unlink(path.join(MEDIA_DIR, name))),
   );
 }
@@ -348,7 +414,11 @@ async function captureAppVideo(browser, appUrl) {
   const video = page.video();
   await context.close();
   if (video) {
-    await video.saveAs(path.join(MEDIA_DIR, "passou-demo.webm"));
+    const webmPath = path.join(MEDIA_DIR, "passou-demo.webm");
+    const mp4Path = path.join(MEDIA_DIR, "passou-demo.mp4");
+    await video.saveAs(webmPath);
+    console.log("  converting WebM → MP4…");
+    await convertWebmToMp4(webmPath, mp4Path);
   }
   await removePlaywrightVideoArtifacts();
 }
