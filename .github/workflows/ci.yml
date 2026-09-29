@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -22,9 +24,6 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Install Playwright (Chromium + ffmpeg)
-        run: npx playwright install --with-deps chromium ffmpeg
-
       - name: Lint
         run: npm run lint
 
@@ -34,15 +33,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Capture docs media
-        run: |
-          npm run start &
-          npx --yes wait-on@3.3.0 http://127.0.0.1:3000 --timeout 120000
-          APP_URL=http://127.0.0.1:3000 SKIP_README_CAPTURE=1 npm run capture:media
+      - name: Assert docs/media files
+        run: node scripts/assert-docs-media.mjs
 
-      - name: Verify docs/media is up to date
-        run: |
-          git diff --exit-code docs/media || (
-            echo "::error::docs/media is out of date. Run: npm run build, npm run start, then APP_URL=http://127.0.0.1:3000 npm run capture:media (and commit docs/media)."
-            exit 1
-          )
+      - name: Require docs/media when UI changes
+        if: github.event_name == 'pull_request'
+        run: >
+          node scripts/assert-docs-media-on-ui-change.mjs
+          "${{ github.event.pull_request.base.sha }}"
+          "${{ github.event.pull_request.head.sha }}"
