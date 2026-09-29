@@ -360,9 +360,9 @@ async function convertWebmToMp4(webmPath, mp4Path, { startSeconds = 2 } = {}) {
 /** GIF for GitHub README (renders as an image; stays in-repo like LocalStudio). */
 async function convertMp4ToGif(mp4Path, gifPath) {
   const ffmpeg = findFfmpegExecutable();
-  // Two-pass palette keeps size reasonable for README (~fps 6, width 640).
+  // Full README column width on GitHub (~888px); 960 matches the MP4 export.
   const vf =
-    "fps=6,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=64:stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5";
+    "fps=6,scale=960:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=64:stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5";
   await execFileAsync(
     ffmpeg,
     ["-y", "-i", mp4Path, "-vf", vf, "-loop", "0", gifPath],
