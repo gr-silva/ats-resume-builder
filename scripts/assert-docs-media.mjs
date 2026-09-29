@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MEDIA = path.join(ROOT, "docs", "media");
+const PUBLIC_DEMO = path.join(ROOT, "public", "passou-demo.mp4");
 
 const MIN_MP4_BYTES = 100 * 1024;
 
@@ -79,7 +80,15 @@ function assertMedia() {
     process.exit(1);
   }
 
+  if (!existsSync(PUBLIC_DEMO) || statSync(PUBLIC_DEMO).size < MIN_MP4_BYTES) {
+    console.error(
+      "missing or too small: public/passou-demo.mp4 (needed for README demo link on Vercel)",
+    );
+    process.exit(1);
+  }
+
   console.log("docs/media OK (required files, sizes, PNG dimensions).");
+  console.log("public/passou-demo.mp4 OK.");
 }
 
 assertMedia();
