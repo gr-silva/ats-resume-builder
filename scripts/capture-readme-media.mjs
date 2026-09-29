@@ -14,7 +14,7 @@
  */
 import { chromium } from "playwright";
 import { existsSync, readdirSync } from "node:fs";
-import { mkdir, readdir, unlink } from "node:fs/promises";
+import { mkdir, readdir, unlink, copyFile } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { createRequire } from "node:module";
 import { promisify } from "node:util";
@@ -327,8 +327,8 @@ function findFfmpegExecutable() {
   return "ffmpeg";
 }
 
-/** Playwright records WebM; convert to MP4 (H.264) for broader playback.
- *  Skips the opening load flash so the first frame (and video thumbnails) show the UI. */
+/** Playwright records WebM; convert to H.264 MP4 (compact, browser-friendly).
+ *  Skips the opening load flash so the first frame / thumbnail shows the UI. */
 async function convertWebmToMp4(webmPath, mp4Path, { startSeconds = 2 } = {}) {
   const ffmpeg = findFfmpegExecutable();
   await execFileAsync(
@@ -339,10 +339,16 @@ async function convertWebmToMp4(webmPath, mp4Path, { startSeconds = 2 } = {}) {
       String(startSeconds),
       "-i",
       webmPath,
+      "-vf",
+      "scale=960:540",
       "-c:v",
       "libx264",
       "-pix_fmt",
       "yuv420p",
+      "-preset",
+      "medium",
+      "-crf",
+      "30",
       "-movflags",
       "+faststart",
       "-an",
@@ -426,9 +432,12 @@ async function captureAppVideo(browser, appUrl) {
   if (video) {
     const webmPath = path.join(MEDIA_DIR, "passou-demo.webm");
     const mp4Path = path.join(MEDIA_DIR, "passou-demo.mp4");
+    const publicMp4Path = path.join(ROOT, "public", "passou-demo.mp4");
     await video.saveAs(webmPath);
     console.log("  converting WebM → MP4…");
     await convertWebmToMp4(webmPath, mp4Path);
+    await copyFile(mp4Path, publicMp4Path);
+    console.log("  copied to public/passou-demo.mp4 (Vercel CDN for README link)");
   }
   await removePlaywrightVideoArtifacts();
 }
