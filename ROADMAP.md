@@ -64,9 +64,9 @@ Hoje existem stubs e badges “em breve” na UI.
 
 Sem conta na nuvem (ver [Conta na nuvem](#conta-na-nuvem--fora-do-escopo-ativo)); ainda assim o usuário precisa **acreditar** que não vai perder o trabalho.
 
-- [ ] Sinalizar falha de persistência (modo privado / cota do `localStorage`) — hoje o write falha em silêncio
-- [ ] Export/import do rascunho (JSON ou MD) como backup local — troca de browser/dispositivo sem sync na nuvem
-- [ ] Ao aplicar Assistente / Importar, deixar explícito o que será substituído (experiências/skills inteiras) e oferecer desfazer — merge atual sobrescreve arrays e gera medo de perder texto já digitado
+- [x] Sinalizar falha de persistência (modo privado / cota do `localStorage`) — hoje o write falha em silêncio *(2026-10-06)*
+- [x] Export/import do rascunho (JSON ou MD) como backup local — troca de browser/dispositivo sem sync na nuvem *(2026-10-06)*
+- [x] Ao aplicar Assistente / Importar, deixar explícito o que será substituído (experiências/skills inteiras) e oferecer desfazer — merge atual sobrescreve arrays e gera medo de perder texto já digitado *(2026-10-06)*
 
 ### 5. Qualidade da IA local (Chrome)
 
@@ -117,7 +117,7 @@ Síntese da auditoria de produto (UI atual). Usar para priorizar issues; itens a
 | ~~Mobile: PDF longe~~ (feito: barra sticky) | Valor (download) abaixo de muito formulário |
 | Badge “em breve” + copy desatualizada | Produto parece incompleto ou inconsistente |
 | Import sem PDF nativo | Entrada natural bloqueada; IA vira obstáculo |
-| `localStorage` silencioso | Descobre perda tarde demais; quebra confiança local-first |
+| ~~`localStorage` silencioso~~ (feito: toast + banner + backup JSON) | Descobre perda tarde demais; quebra confiança local-first |
 | ~~Jargão STAR + defaults eng.~~ (feito: details + categorias neutras) | Parece só para quem já “fala ATS/tech” |
 
 Princípio: **mostrar valor em qualquer navegador em menos de 1 minuto** (preencher mínimo → ver resultado → baixar). IA e nichos só depois que esse caminho estiver óbvio e seguro.

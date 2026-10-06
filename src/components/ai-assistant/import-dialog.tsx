@@ -191,6 +191,15 @@ export function ImportDialog({
             <p className="text-xs text-muted">
               Revise os dados extraídos antes de aplicar ao formulário.
             </p>
+            <p className="rounded-md border border-border bg-background px-3 py-2 text-xs text-text-secondary">
+              Ao aplicar, as listas de <strong className="font-medium text-foreground">experiências</strong> e{" "}
+              <strong className="font-medium text-foreground">skills</strong> do
+              formulário serão{" "}
+              <strong className="font-medium text-foreground">substituídas</strong>{" "}
+              pelo resultado da IA (não mescladas item a item). Formação, cursos e
+              idiomas também são trocados. Você poderá desfazer por alguns
+              segundos após aplicar.
+            </p>
             <div className="flex justify-between gap-2">
               <Button
                 type="button"
