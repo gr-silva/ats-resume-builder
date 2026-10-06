@@ -80,10 +80,10 @@ Sem conta na nuvem (ver [Conta na nuvem](#conta-na-nuvem--fora-do-escopo-ativo))
 
 Itens que não quebram o fluxo, mas enfraquecem clareza e conversão na primeira visita.
 
-- [ ] Reavaliar posição/peso do aviso de Analytics vs. CTA Começar — o bloco de privacidade compete com o valor (“preencher → PDF”) antes do usuário experimentar
-- [ ] Painel “IA opcional” no aside: manter informativo, sem parecer pré-requisito do produto no mobile (onde aparece depois de um form longo)
-- [ ] Erro e marca usam o mesmo vermelho (`accent`) — diferenciar estado de erro do CTA primário para não misturar “ação” com “falha”
-- [ ] Considerar tema claro (ou preview do currículo em fundo claro) — currículo é documento de leitura; UI só dark pode parecer ferramenta de dev, não produto de emprego
+- [x] Reavaliar posição/peso do aviso de Analytics vs. CTA Começar — o bloco de privacidade compete com o valor (“preencher → PDF”) antes do usuário experimentar *(2026-10-06)*
+- [x] Painel “IA opcional” no aside: manter informativo, sem parecer pré-requisito do produto no mobile (onde aparece depois de um form longo) *(2026-10-06)*
+- [x] Erro e marca usam o mesmo vermelho (`accent`) — diferenciar estado de erro do CTA primário para não misturar “ação” com “falha” *(2026-10-06)*
+- [x] Preview do currículo em fundo claro (papel) — UI do app permanece dark; tema claro completo adiado *(2026-10-06)*
 
 ### 7. Apoio ao projeto (open source)
 

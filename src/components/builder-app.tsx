@@ -306,8 +306,6 @@ function BuilderAppContent() {
         </div>
       </header>
 
-      <PrivacyNotice />
-
       <div
         id="editor"
         className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
@@ -330,7 +328,7 @@ function BuilderAppContent() {
             </div>
             <Separator className="mb-4" />
             {error ? (
-              <p className="mb-3 text-sm text-accent">{error}</p>
+              <p className="mb-3 text-sm text-destructive">{error}</p>
             ) : null}
             <Tabs defaultValue="pdf">
               <TabsList className="w-auto">
@@ -354,15 +352,17 @@ function BuilderAppContent() {
             </Tabs>
           </div>
           <AiSetupPanel />
-          <p className="text-xs text-muted">
-            Rascunho salvo automaticamente no navegador (localStorage). O
-            formulário e o export MD/PDF funcionam em qualquer navegador. A IA
-            opcional processa dados localmente no Chrome (Gemini Nano) — conteúdo
-            do currículo e respostas da IA não vão para API externa nem banco.
-            Usamos Vercel Web Analytics só para visitas/páginas agregadas, sem
-            analisar o texto preenchido. O preview PDF é uma aproximação visual;
-            o arquivo baixado é gerado com PDFKit.
-          </p>
+          <div className="space-y-3">
+            <PrivacyNotice />
+            <p className="text-xs text-muted">
+              Rascunho salvo automaticamente no navegador (localStorage). O
+              formulário e o export MD/PDF funcionam em qualquer navegador. A IA
+              opcional processa dados localmente no Chrome (Gemini Nano) —
+              conteúdo do currículo e respostas da IA não vão para API externa
+              nem banco. O preview PDF é uma aproximação visual; o arquivo
+              baixado é gerado com PDFKit.
+            </p>
+          </div>
         </aside>
       </div>
 

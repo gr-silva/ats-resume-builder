@@ -537,7 +537,7 @@ export function StarReviewDialog({
               informação, fará perguntas antes de reescrever. Nada é aplicado ao
               formulário até você confirmar no preview.
             </p>
-            {error ? <p className="text-sm text-accent">{error}</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
             <div className="flex flex-wrap justify-end gap-2">
               <AiPrepareButton onPrepared={() => void refresh()} />
               <Button
@@ -690,7 +690,7 @@ export function StarReviewDialog({
               })}
             </div>
             </ScrollArea>
-            {error ? <p className="text-sm text-accent">{error}</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
             <div className="space-y-2">
               {mode === "experience" ? (
                 <p className="text-xs text-muted">

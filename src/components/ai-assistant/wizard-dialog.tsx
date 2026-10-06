@@ -194,7 +194,7 @@ export function WizardDialog({
               />
               <p className="text-xs text-muted">{currentQuestion.hint}</p>
             </div>
-            {error ? <p className="text-sm text-accent">{error}</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
             <div className="flex justify-between gap-2">
               <Button
                 type="button"
