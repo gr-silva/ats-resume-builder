@@ -89,7 +89,7 @@ Itens que não quebram o fluxo, mas enfraquecem clareza e conversão na primeira
 
 Doação é opcional e **nunca** paywall.
 
-- [ ] Link discreto “Apoiar o projeto” no README (GitHub Sponsors / Ko-fi / equivalente)
+- [x] Link discreto “Apoiar o projeto” no README (GitHub Sponsors / Ko-fi / equivalente) *(2026-10-06)*
 - [ ] Botão/CTA na UI **somente depois** de baseline estável de analytics (visitas recorrentes, não só pico de post) — preferir rodapé/aside, não competir com Começar / PDF
 
 ---
