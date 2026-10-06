@@ -38,8 +38,16 @@ export function AiSetupPanel() {
           </p>
           <p className="text-xs">
             Para o assistente local (wizard, importar e revisão STAR), use Chrome
-            desktop 148+ com hardware compatível (~16 GB RAM, GPU com 4+ GB
-            VRAM).
+            desktop 148+ com hardware mínimo aproximado: ~16&nbsp;GB de RAM e GPU
+            com 4+&nbsp;GB de VRAM.
+          </p>
+          <p className="text-xs">
+            No Chrome compatível: clique em &quot;Preparar IA&quot; e aguarde o
+            download do modelo. Para conferir o status, cole{" "}
+            <code className="select-all rounded bg-surface px-1 py-0.5 font-mono text-[0.7rem] text-text-secondary">
+              chrome://on-device-internals
+            </code>{" "}
+            na barra de endereço (não é um link clicável nesta página).
           </p>
         </div>
       ) : (
@@ -74,9 +82,19 @@ export function AiSetupPanel() {
               )}
             </Button>
           ) : null}
+          {needsDownload ? (
+            <p className="mt-2 text-xs text-muted">
+              O download do Gemini Nano acontece uma vez no Chrome. Depois,
+              confira o modelo colando{" "}
+              <code className="select-all rounded bg-surface px-1 py-0.5 font-mono text-[0.7rem] text-text-secondary">
+                chrome://on-device-internals
+              </code>{" "}
+              na barra de endereço.
+            </p>
+          ) : null}
           <p className="mt-3 text-xs text-muted">
             O assistente roda localmente (Gemini Nano). Nada é enviado a
-            servidores externos.
+            servidores externos. O formulário principal funciona sem a IA.
           </p>
         </>
       )}
