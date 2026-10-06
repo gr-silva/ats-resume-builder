@@ -7,6 +7,7 @@ import {
   useChromeAiContext,
 } from "@/components/ai-assistant/chrome-ai-provider";
 import { WizardDialog } from "@/components/ai-assistant/wizard-dialog";
+import { LinkedInCopyDialog } from "@/components/linkedin-copy-dialog";
 import { ResumePdfPreview } from "@/components/resume-pdf-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,15 @@ import {
 } from "@/lib/resume/form-progress";
 import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
 import type { ResumeData } from "@/lib/resume/schema";
-import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
+import {
+  Download,
+  Eraser,
+  FileText,
+  Link,
+  Play,
+  Sparkles,
+  Upload,
+} from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
 export function BuilderApp() {
@@ -38,16 +47,18 @@ export function BuilderApp() {
   );
 }
 
-type PendingExport = "pdf" | "markdown" | null;
+type PendingExport = "pdf" | "markdown" | "docx" | null;
 type PendingDraftAction = "reset" | "demo" | null;
 
 function BuilderAppContent() {
   const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
   const { isSupported, checking } = useChromeAiContext();
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [docxLoading, setDocxLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
+  const [linkedinOpen, setLinkedinOpen] = useState(false);
   const [pendingExport, setPendingExport] = useState<PendingExport>(null);
   const [pendingDraftAction, setPendingDraftAction] =
     useState<PendingDraftAction>(null);
@@ -121,13 +132,47 @@ function BuilderAppContent() {
     showToast({ text: "Markdown baixado" });
   }
 
-  function requestExport(kind: "pdf" | "markdown") {
+  async function runDocxDownload() {
+    setError(null);
+    setDocxLoading(true);
+    try {
+      const res = await fetch("/api/docx", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, focus: "geral" }),
+      });
+
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(payload?.error || "Não foi possível gerar o DOCX.");
+      }
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(data.name || "curriculo").trim() || "curriculo"}-ATS-Geral.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast({ text: "DOCX baixado" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao baixar DOCX.");
+    } finally {
+      setDocxLoading(false);
+    }
+  }
+
+  function requestExport(kind: "pdf" | "markdown" | "docx") {
     if (isResumeTooEmpty(data)) {
       setPendingExport(kind);
       return;
     }
     if (kind === "pdf") {
       void runPdfDownload();
+    } else if (kind === "docx") {
+      void runDocxDownload();
     } else {
       runMarkdownDownload();
     }
@@ -138,6 +183,8 @@ function BuilderAppContent() {
     setPendingExport(null);
     if (kind === "pdf") {
       void runPdfDownload();
+    } else if (kind === "docx") {
+      void runDocxDownload();
     } else if (kind === "markdown") {
       runMarkdownDownload();
     }
@@ -198,12 +245,30 @@ function BuilderAppContent() {
       </Button>
       <Button
         type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => requestExport("docx")}
+        disabled={docxLoading}
+      >
+        <FileText className="size-4" />
+        {docxLoading ? "Gerando…" : "DOCX"}
+      </Button>
+      <Button
+        type="button"
         size="sm"
         onClick={() => requestExport("pdf")}
         disabled={pdfLoading}
       >
         <Download className="size-4" />
         {pdfLoading ? "Gerando…" : "PDF"}
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => setLinkedinOpen(true)}
+      >
+        <Link className="size-4" /> LinkedIn
       </Button>
     </>
   );
@@ -219,7 +284,7 @@ function BuilderAppContent() {
           Passou
         </h1>
         <p className="mt-3 text-base text-text-secondary">
-          Currículo que passa na triagem. Markdown e PDF, sem cadastro.
+          Currículo que passa na triagem. Markdown, DOCX e PDF, sem cadastro.
         </p>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Badge className="border-accent/40 bg-accent/10 text-accent">
@@ -356,12 +421,13 @@ function BuilderAppContent() {
           <AiSetupPanel />
           <p className="text-xs text-muted">
             Rascunho salvo automaticamente no navegador (localStorage). O
-            formulário e o export MD/PDF funcionam em qualquer navegador. A IA
-            opcional processa dados localmente no Chrome (Gemini Nano) — conteúdo
-            do currículo e respostas da IA não vão para API externa nem banco.
-            Usamos Vercel Web Analytics só para visitas/páginas agregadas, sem
-            analisar o texto preenchido. O preview PDF é uma aproximação visual;
-            o arquivo baixado é gerado com PDFKit.
+            formulário e o export MD/DOCX/PDF funcionam em qualquer navegador.
+            Textos LinkedIn são gerados no cliente. A IA opcional processa dados
+            localmente no Chrome (Gemini Nano) — conteúdo do currículo e respostas
+            da IA não vão para API externa nem banco. Usamos Vercel Web Analytics
+            só para visitas/páginas agregadas, sem analisar o texto preenchido. O
+            preview PDF é uma aproximação visual; o arquivo baixado é gerado com
+            PDFKit.
           </p>
         </aside>
       </div>
@@ -389,6 +455,19 @@ function BuilderAppContent() {
           onApply={setData}
         />
       ) : null}
+
+      <LinkedInCopyDialog
+        open={linkedinOpen}
+        onOpenChange={setLinkedinOpen}
+        data={data}
+        onCopied={(label) => {
+          if (label === "Arquivo .txt") {
+            showToast({ text: "Textos LinkedIn baixados" });
+          } else {
+            showToast({ text: `${label} copiado` });
+          }
+        }}
+      />
 
       <Dialog
         open={pendingExport !== null}
