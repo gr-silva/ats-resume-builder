@@ -73,7 +73,9 @@ Gere JSON válido conforme o schema fornecido. Regras:
 - Se status for "partial" ou "missing", inclua em "questions" uma pergunta objetiva em PT-BR para o usuário preencher a lacuna.
 - "suggestions": array de objetos com "issue" (diagnóstico curto do que falta ou está fraco) e "idea" (sugestão acionável: tipo de métrica aplicável ao contexto — tempo, volume, %, custo, NPS — ou frase modelo para inspirar o ajuste, SEM números ou percentuais fictícios).
 - Exemplo de idea: "Considere citar redução de tempo de deploy ou volume de tickets resolvidos por sprint".
-- NÃO invente métricas, empresas, datas ou tecnologias sem base no texto ou nas respostas do usuário.
+- PRESERVAR o conteúdo original: tecnologias, ações, contexto e quaisquer números já presentes no texto ou nas respostas do usuário devem permanecer; só acrescente o que for pedido.
+- NUNCA invente métricas, percentuais, valores, datas, empresas ou tecnologias. Se não houver número informado, descreva o impacto qualitativamente ou deixe a lacuna para o usuário.
+- Ao aplicar sugestões: integre a ideia ao texto existente sem fabricar resultados, cifras ou percentuais.
 - Responda apenas com JSON, sem markdown nem texto extra.`;
 
 function formatExperienceContext(context: StarExperienceContext): string {
@@ -174,16 +176,16 @@ export function buildStarRewritePrompt(
 Regras para sugestões marcadas:
 - Toda sugestão marcada DEVE alterar o rewritten de forma visível por ADIÇÃO/INTEGRAÇÃO do novo conteúdo — não por substituição do original.
 - Proibido devolver o bullet original sem incorporar o novo (ou só cosmético: pontuação/sinônimos) se houver sugestão marcada.
-- O original deve continuar reconhecível no rewritten.
-- Sem valor do usuário: aplicar a ideia qualitativamente; sem valor NÃO autoriza ignorar a sugestão.`
+- O original deve continuar reconhecível no rewritten (preserve fatos, tecnologias e números já presentes).
+- Sem valor do usuário: aplicar a ideia qualitativamente; sem valor NÃO autoriza ignorar a sugestão nem inventar métricas/resultados.`
     : "";
 
   return `${STAR_SYSTEM_PROMPT}
 
 Reescreva APENAS os bullets listados abaixo em formato STAR comprimido (uma frase ATS-friendly).
-O bullet original é a base obrigatória: NÃO descartar informações já presentes (contexto, tecnologias, ações, resultados, métricas).
+O bullet original é a base obrigatória: PRESERVAR todo o conteúdo já presente (contexto, tecnologias, ações, resultados, métricas); NÃO descartar nem substituir por outra narrativa.
 Acrescentar apenas o que vier das respostas do usuário e/ou sugestões marcadas; reordenar/ligar para fluidez sem perder a essência STAR.
-Proibido reescrever do zero ou trocar o conteúdo original por outra narrativa.
+Proibido reescrever do zero, fabricar resultados ou inventar números/percentuais/datas ausentes no original e nas respostas.
 Use as respostas e sugestões marcadas pelo usuário quando fornecidas. Não invente dados.
 Se uma sugestão foi marcada sem valor/detalhe, OBRIGATÓRIO aplicar a ideia qualitativamente no rewritten — não inventar números não significa omitir a sugestão.${selectedRules}
 

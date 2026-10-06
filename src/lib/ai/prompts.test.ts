@@ -21,7 +21,9 @@ describe("STAR prompts", () => {
     expect(prompt).toContain('"issue"');
     expect(prompt).toContain('"idea"');
     expect(prompt).toContain("SEM números ou percentuais fictícios");
-    expect(prompt).toContain("NÃO invente");
+    expect(prompt).toContain("PRESERVAR o conteúdo original");
+    expect(prompt).toContain("NUNCA invente métricas");
+    expect(prompt).toContain("sem fabricar resultados");
   });
 
   it("includes bullet indices in experience analyze prompt", () => {
@@ -50,6 +52,8 @@ describe("STAR prompts", () => {
     expect(prompt).toContain("result");
     expect(prompt).toContain("Não invente");
     expect(prompt).toContain("APENAS os bullets listados");
+    expect(prompt).toContain("PRESERVAR todo o conteúdo");
+    expect(prompt).toContain("fabricar resultados");
   });
 
   it("includes selected suggestions with and without values", () => {
@@ -88,9 +92,10 @@ describe("STAR prompts", () => {
     expect(withoutValue).toContain("não significa omitir");
     expect(withoutValue).toContain("Considere citar redução de tempo");
     expect(withoutValue).toContain("ADIÇÃO/INTEGRAÇÃO");
-    expect(withoutValue).toContain("NÃO descartar");
+    expect(withoutValue).toContain("PRESERVAR todo o conteúdo");
     expect(withoutValue).toContain("base obrigatória");
     expect(withoutValue).toContain("Acrescentar apenas");
     expect(withoutValue).toContain("Proibido reescrever do zero");
+    expect(withoutValue).toContain("nem inventar métricas/resultados");
   });
 });
