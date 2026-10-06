@@ -11,6 +11,8 @@ const STORAGE_KEY = "ats-resume-builder:draft:v1";
 type DraftStore = {
   data: ResumeData;
   hydrated: boolean;
+  /** False after a localStorage write failure (quota / private mode). */
+  persistOk: boolean;
 };
 
 const listeners = new Set<() => void>();
@@ -18,6 +20,7 @@ const listeners = new Set<() => void>();
 let store: DraftStore = {
   data: createEmptyResume(),
   hydrated: false,
+  persistOk: true,
 };
 
 function emit() {
@@ -45,6 +48,7 @@ function ensureHydrated() {
   store = {
     data: readFromLocalStorage(),
     hydrated: true,
+    persistOk: true,
   };
 }
 
@@ -56,25 +60,29 @@ function getSnapshot(): DraftStore {
 const serverSnapshot: DraftStore = {
   data: createEmptyResume(),
   hydrated: false,
+  persistOk: true,
 };
 
 function getServerSnapshot(): DraftStore {
   return serverSnapshot;
 }
 
-function writeDraft(next: ResumeData) {
+/** Writes in-memory draft and attempts localStorage. Returns whether persist succeeded. */
+function writeDraft(next: ResumeData): boolean {
   ensureHydrated();
-  store = { data: next, hydrated: true };
+  let persistOk = true;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   } catch {
-    // ignore quota / private mode
+    persistOk = false;
   }
+  store = { data: next, hydrated: true, persistOk };
   emit();
+  return persistOk;
 }
 
 export function useResumeDraft() {
-  const { data, hydrated } = useSyncExternalStore(
+  const { data, hydrated, persistOk } = useSyncExternalStore(
     subscribe,
     getSnapshot,
     getServerSnapshot
@@ -83,16 +91,16 @@ export function useResumeDraft() {
   const setData = useCallback((value: ResumeData | ((prev: ResumeData) => ResumeData)) => {
     const prev = getSnapshot().data;
     const next = typeof value === "function" ? value(prev) : value;
-    writeDraft(next);
+    return writeDraft(next);
   }, []);
 
   const reset = useCallback(() => {
-    writeDraft(createEmptyResume());
+    return writeDraft(createEmptyResume());
   }, []);
 
   const loadDemo = useCallback((demo: ResumeData) => {
-    writeDraft({ ...demo, focus: "geral" });
+    return writeDraft({ ...demo, focus: "geral" });
   }, []);
 
-  return { data, setData, hydrated, reset, loadDemo };
+  return { data, setData, hydrated, persistOk, reset, loadDemo };
 }
