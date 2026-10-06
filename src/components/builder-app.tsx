@@ -19,6 +19,11 @@ import { PrivacyNotice } from "@/components/privacy-notice";
 import { ResumeForm } from "@/components/resume-form";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
 import { FOCUS_LABELS } from "@/lib/focus";
+import {
+  draftBackupFilename,
+  parseDraftBackup,
+  serializeDraft,
+} from "@/lib/resume/draft-backup";
 import { createDemoResume } from "@/lib/resume/demo";
 import { buildMarkdown } from "@/lib/resume/build-markdown";
 import {
@@ -27,8 +32,16 @@ import {
 } from "@/lib/resume/form-progress";
 import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
 import type { ResumeData } from "@/lib/resume/schema";
-import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import {
+  Archive,
+  Download,
+  Eraser,
+  FileText,
+  Play,
+  Sparkles,
+  Upload,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function BuilderApp() {
   return (
@@ -42,7 +55,8 @@ type PendingExport = "pdf" | "markdown" | null;
 type PendingDraftAction = "reset" | "demo" | null;
 
 function BuilderAppContent() {
-  const { data, setData, hydrated, reset, loadDemo } = useResumeDraft();
+  const { data, setData, hydrated, persistOk, reset, loadDemo } =
+    useResumeDraft();
   const { isSupported, checking } = useChromeAiContext();
   const [pdfLoading, setPdfLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,9 +65,14 @@ function BuilderAppContent() {
   const [pendingExport, setPendingExport] = useState<PendingExport>(null);
   const [pendingDraftAction, setPendingDraftAction] =
     useState<PendingDraftAction>(null);
+  const [pendingBackupImport, setPendingBackupImport] =
+    useState<ResumeData | null>(null);
+  const [backupMenuOpen, setBackupMenuOpen] = useState(false);
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [toastDurationMs, setToastDurationMs] = useState(3000);
   const [formTab, setFormTab] = useState<FormTabId>("dados");
+  const backupFileInputRef = useRef<HTMLInputElement>(null);
+  const prevPersistOk = useRef(true);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
@@ -77,6 +96,18 @@ function BuilderAppContent() {
   const dismissToast = useCallback(() => {
     setToast(null);
   }, []);
+
+  useEffect(() => {
+    if (!persistOk && prevPersistOk.current) {
+      showToast(
+        {
+          text: "Não foi possível salvar o rascunho neste navegador (modo privado ou cota cheia). O app continua funcionando na memória.",
+        },
+        8000
+      );
+    }
+    prevPersistOk.current = persistOk;
+  }, [persistOk, showToast]);
 
   async function runPdfDownload() {
     setError(null);
@@ -178,6 +209,68 @@ function BuilderAppContent() {
     applyDraftAction(action, structuredClone(data));
   }
 
+  function exportDraftBackup() {
+    setBackupMenuOpen(false);
+    const blob = new Blob([serializeDraft(data)], {
+      type: "application/json;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = draftBackupFilename(data);
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast({ text: "Rascunho exportado (JSON)" });
+  }
+
+  async function handleBackupFile(file: File) {
+    setBackupMenuOpen(false);
+    try {
+      const raw = await file.text();
+      const result = parseDraftBackup(raw);
+      if (!result.ok) {
+        showToast({ text: result.error }, 6000);
+        return;
+      }
+      setPendingBackupImport(result.data);
+    } catch {
+      showToast({ text: "Não foi possível ler o arquivo." }, 6000);
+    }
+  }
+
+  function confirmBackupImport() {
+    const next = pendingBackupImport;
+    setPendingBackupImport(null);
+    if (!next) return;
+    const previous = structuredClone(data);
+    setData(next);
+    showToast(
+      {
+        text: "Rascunho importado",
+        action: {
+          label: "Desfazer",
+          onClick: () => setData(previous),
+        },
+      },
+      8000
+    );
+  }
+
+  function handleAiApply(next: ResumeData) {
+    const previous = structuredClone(data);
+    setData(next);
+    showToast(
+      {
+        text: "Dados da IA aplicados",
+        action: {
+          label: "Desfazer",
+          onClick: () => setData(previous),
+        },
+      },
+      8000
+    );
+  }
+
   if (!hydrated) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted">
@@ -261,6 +354,64 @@ function BuilderAppContent() {
           >
             <Eraser className="size-3.5" /> Limpar
           </Button>
+          <span aria-hidden className="select-none text-border">
+            ·
+          </span>
+          <div className="relative">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-muted hover:text-foreground"
+              aria-expanded={backupMenuOpen}
+              aria-haspopup="menu"
+              onClick={() => setBackupMenuOpen((open) => !open)}
+            >
+              <Archive className="size-3.5" /> Backup
+            </Button>
+            {backupMenuOpen ? (
+              <>
+                <button
+                  type="button"
+                  className="fixed inset-0 z-40 cursor-default"
+                  aria-label="Fechar menu de backup"
+                  onClick={() => setBackupMenuOpen(false)}
+                />
+                <div
+                  role="menu"
+                  className="absolute left-0 z-50 mt-1 min-w-[11rem] rounded-lg border border-border bg-elevated py-1 shadow-lg"
+                >
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background"
+                    onClick={exportDraftBackup}
+                  >
+                    Exportar JSON
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground hover:bg-background"
+                    onClick={() => backupFileInputRef.current?.click()}
+                  >
+                    Importar JSON
+                  </button>
+                </div>
+              </>
+            ) : null}
+            <input
+              ref={backupFileInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void handleBackupFile(file);
+                e.target.value = "";
+              }}
+            />
+          </div>
           {isSupported ? (
             <>
               <span aria-hidden className="select-none text-border">
@@ -305,6 +456,18 @@ function BuilderAppContent() {
           ) : null}
         </div>
       </header>
+
+      {!persistOk ? (
+        <div
+          role="status"
+          className="mb-4 rounded-lg border border-accent/40 bg-accent/10 px-4 py-3 text-sm text-foreground"
+        >
+          Não foi possível gravar o rascunho no navegador (modo privado ou cota
+          do armazenamento). Você ainda pode editar e exportar MD/PDF; use{" "}
+          <strong className="font-medium">Backup → Exportar JSON</strong> para
+          não perder o trabalho.
+        </div>
+      ) : null}
 
       <PrivacyNotice />
 
@@ -356,12 +519,13 @@ function BuilderAppContent() {
           <AiSetupPanel />
           <p className="text-xs text-muted">
             Rascunho salvo automaticamente no navegador (localStorage). O
-            formulário e o export MD/PDF funcionam em qualquer navegador. A IA
-            opcional processa dados localmente no Chrome (Gemini Nano) — conteúdo
-            do currículo e respostas da IA não vão para API externa nem banco.
-            Usamos Vercel Web Analytics só para visitas/páginas agregadas, sem
-            analisar o texto preenchido. O preview PDF é uma aproximação visual;
-            o arquivo baixado é gerado com PDFKit.
+            formulário e o export MD/PDF funcionam em qualquer navegador. Use
+            Backup (JSON) para levar o rascunho a outro dispositivo — sem sync na
+            nuvem. A IA opcional processa dados localmente no Chrome (Gemini
+            Nano) — conteúdo do currículo e respostas da IA não vão para API
+            externa nem banco. Usamos Vercel Web Analytics só para
+            visitas/páginas agregadas, sem analisar o texto preenchido. O preview
+            PDF é uma aproximação visual; o arquivo baixado é gerado com PDFKit.
           </p>
         </aside>
       </div>
@@ -378,7 +542,7 @@ function BuilderAppContent() {
           open={wizardOpen}
           onOpenChange={setWizardOpen}
           currentData={data}
-          onApply={setData}
+          onApply={handleAiApply}
         />
       ) : null}
       {importOpen ? (
@@ -386,7 +550,7 @@ function BuilderAppContent() {
           open={importOpen}
           onOpenChange={setImportOpen}
           currentData={data}
-          onApply={setData}
+          onApply={handleAiApply}
         />
       ) : null}
 
@@ -434,6 +598,28 @@ function BuilderAppContent() {
           </Button>
           <Button type="button" onClick={confirmDraftAction}>
             {pendingDraftAction === "demo" ? "Carregar demo" : "Limpar"}
+          </Button>
+        </div>
+      </Dialog>
+
+      <Dialog
+        open={pendingBackupImport !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingBackupImport(null);
+        }}
+        title="Importar rascunho?"
+        description="Isso substitui o rascunho atual pelo JSON selecionado. Você poderá desfazer por alguns segundos."
+      >
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setPendingBackupImport(null)}
+          >
+            Cancelar
+          </Button>
+          <Button type="button" onClick={confirmBackupImport}>
+            Importar
           </Button>
         </div>
       </Dialog>
