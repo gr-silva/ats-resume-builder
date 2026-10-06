@@ -133,6 +133,10 @@ src/components/     # formulário + assistente IA + UI
 
 Planejamento de produto: [ROADMAP.md](ROADMAP.md).
 
+## Apoiar o projeto
+
+O Passou é open source e gratuito. Se o projeto te ajudou e quiser apoiar o desenvolvimento de forma opcional (nunca é paywall), pode [patrocinar no GitHub Sponsors](https://github.com/sponsors/gr-silva).
+
 ## Licença
 
 [MIT](LICENSE)
