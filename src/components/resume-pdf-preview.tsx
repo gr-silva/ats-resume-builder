@@ -188,7 +188,7 @@ export function ResumePdfPreview({
 
   if (blocks.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-background p-4 text-sm text-muted">
+      <div className="rounded-lg border border-[#d6d0c4] bg-[#f5f1e8] p-4 text-sm text-neutral-500">
         Preencha o formulário para ver o preview do PDF.
       </div>
     );
@@ -196,12 +196,12 @@ export function ResumePdfPreview({
 
   return (
     <ScrollArea
-      className="rounded-lg border border-border bg-neutral-600/40"
+      className="rounded-lg border border-[#d6d0c4] bg-[#ebe6dc]"
       viewportClassName="max-h-[70vh]"
     >
-      <div className="p-3 sm:p-4">
+      <div className="p-3 sm:p-5">
         <div
-          className="mx-auto w-full max-w-[210mm] origin-top bg-white shadow-md"
+          className="mx-auto w-full max-w-[210mm] origin-top bg-[#fffcf7] shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.12)]"
           style={{
             color: COLORS.text,
             fontFamily: "Helvetica, Arial, sans-serif",

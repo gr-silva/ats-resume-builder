@@ -21,7 +21,8 @@
   --primary-foreground: #fafafa;
   --secondary: #171717;
   --secondary-foreground: #fafafa;
-  --destructive: #ef4444;
+  /* Error state — distinct from brand accent (#EF4444) */
+  --destructive: #f87171;
   --muted-foreground: #a3a3a3;
 }
 

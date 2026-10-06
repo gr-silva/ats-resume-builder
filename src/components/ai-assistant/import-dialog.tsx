@@ -163,7 +163,7 @@ export function ImportDialog({
                 <FileUp className="size-4" /> Carregar .txt ou .md
               </Button>
             </div>
-            {error ? <p className="text-sm text-accent">{error}</p> : null}
+            {error ? <p className="text-sm text-destructive">{error}</p> : null}
             <div className="flex flex-wrap justify-end gap-2">
               <AiPrepareButton onPrepared={() => void refresh()} />
               <Button
