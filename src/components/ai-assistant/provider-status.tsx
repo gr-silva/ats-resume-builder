@@ -66,13 +66,25 @@ export function ProviderStatus({
         </p>
       ) : null}
       {availability === "unavailable" && showTroubleshooting ? (
-        <div className="mt-2 space-y-1 text-xs text-muted">
+        <div className="mt-2 space-y-1.5 text-xs text-muted">
           <p>
-            Formulário e export MD/PDF funcionam normalmente neste navegador.
+            Formulário e export MD/PDF funcionam normalmente neste navegador — a
+            IA é opcional.
           </p>
           <p>
-            O assistente opcional exige Chrome desktop 148+ com hardware
-            compatível (~16 GB RAM, GPU com 4+ GB VRAM).
+            O assistente local exige Chrome desktop 148+ e hardware mínimo
+            aproximado: ~16&nbsp;GB de RAM e GPU com 4+&nbsp;GB de VRAM.
+          </p>
+          <p>
+            Se o Chrome for compatível mas o modelo ainda não estiver pronto:
+            use &quot;Preparar IA&quot; (ou o botão equivalente) e aguarde o
+            download do Gemini Nano. Depois, confira o status do modelo colando{" "}
+            <code className="select-all rounded bg-surface px-1 py-0.5 font-mono text-[0.7rem] text-text-secondary">
+              chrome://on-device-internals
+            </code>{" "}
+            na barra de endereço (links{" "}
+            <span className="font-mono">chrome://</span> não abrem a partir da
+            página).
           </p>
           <p>
             <a
@@ -82,13 +94,6 @@ export function ProviderStatus({
               className="text-accent underline-offset-2 hover:underline"
             >
               Documentação da Prompt API
-            </a>
-            {" · "}
-            <a
-              href="chrome://on-device-internals"
-              className="text-accent underline-offset-2 hover:underline"
-            >
-              chrome://on-device-internals
             </a>
           </p>
         </div>
