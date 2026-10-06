@@ -129,7 +129,7 @@ src/components/     # formulário + assistente IA + UI
 ```
 
 - `applyFocus(data, focusId)` — hoje identidade para `geral`; ponto de extensão para nichos + IA.
-- Focos `fullstack` e `ia` existem como stubs e aparecem na UI como “em breve”.
+- Focos `fullstack` e `ia` existem como stubs para o futuro e ainda não são selecionáveis na UI.
 
 Planejamento de produto: [ROADMAP.md](ROADMAP.md).
 

@@ -225,7 +225,7 @@ function BuilderAppContent() {
           <Badge className="border-accent/40 bg-accent/10 text-accent">
             Qualquer navegador
           </Badge>
-          <Badge>Foco: {FOCUS_LABELS.geral}</Badge>
+          <Badge>Foco ativo: {FOCUS_LABELS.geral}</Badge>
           <Badge
             title={
               isSupported
@@ -234,9 +234,6 @@ function BuilderAppContent() {
             }
           >
             IA opcional (Chrome)
-          </Badge>
-          <Badge title="Nichos Full Stack e IA — em breve">
-            Full Stack — em breve
           </Badge>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">

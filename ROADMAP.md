@@ -54,11 +54,11 @@ Fricções que fazem o usuário desistir **antes** de exportar.
 
 ### 3. Nichos (Full Stack, IA, …)
 
-Hoje existem stubs e badges “em breve” na UI.
+Stubs de foco existem no código; não são selecionáveis na UI. Ativação de nicho fica adiada.
 
-- [ ] Ativar seleção de nicho de forma útil (reordenar/ênfase de skills e experiências) **ou**
-- [ ] Remover/suavizar badges “em breve” até o recurso existir — evitar promessa vazia
-- [ ] Alinhar metadata / copy do layout (“nichos e IA em breve”) com o que o produto já faz — inconsistência gera desconfiança
+- [ ] Ativar seleção de nicho de forma útil (reordenar/ênfase de skills e experiências)
+- [x] Remover/suavizar badges “em breve” até o recurso existir — evitar promessa vazia *(2026-10-06)*
+- [x] Alinhar metadata / copy do layout (“nichos e IA em breve”) com o que o produto já faz — inconsistência gera desconfiança *(2026-10-06)*
 
 ### 4. Confiança no rascunho local-first
 
@@ -115,7 +115,7 @@ Síntese da auditoria de produto (UI atual). Usar para priorizar issues; itens a
 | ~~Tabs sem progresso~~ (feito: checklist N/6) | Formulário longo sem mapa mental; Experiência (valor ATS) fica escondida |
 | ~~Limpar / demo sem undo~~ (feito: dialog + Desfazer) | Medo de perder rascunho → evita explorar |
 | ~~Mobile: PDF longe~~ (feito: barra sticky) | Valor (download) abaixo de muito formulário |
-| Badge “em breve” + copy desatualizada | Produto parece incompleto ou inconsistente |
+| ~~Badge “em breve” + copy desatualizada~~ (feito: honesty path) | Produto parece incompleto ou inconsistente |
 | Import sem PDF nativo | Entrada natural bloqueada; IA vira obstáculo |
 | `localStorage` silencioso | Descobre perda tarde demais; quebra confiança local-first |
 | ~~Jargão STAR + defaults eng.~~ (feito: details + categorias neutras) | Parece só para quem já “fala ATS/tech” |

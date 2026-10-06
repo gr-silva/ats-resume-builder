@@ -20,6 +20,6 @@ export function isFocusSupported(focusId: FocusId): boolean {
 
 export const FOCUS_LABELS: Record<FocusId, string> = {
   geral: "Geral",
-  fullstack: "Full Stack (em breve)",
-  ia: "IA (em breve)",
+  fullstack: "Full Stack",
+  ia: "IA",
 };
