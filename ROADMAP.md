@@ -33,8 +33,8 @@ Ordenado pelo impacto no caminho que **a maioria** usa (formulário → exportar
 
 ### 1. Fechar valor de exportação
 
-- [ ] Export DOCX (ATS-friendly)
-- [ ] Textos prontos para LinkedIn (sobre / experiências), gerados a partir do rascunho local — sem envio a servidor além do necessário para gerar o arquivo
+- [x] Export DOCX (ATS-friendly) *(2026-10-06)*
+- [x] Textos prontos para LinkedIn (sobre / experiências), gerados a partir do rascunho local — sem envio a servidor além do necessário para gerar o arquivo *(2026-10-06)*
 - [x] **Preview do PDF** (ou render próximo do PDF) antes do download — aside com tabs PDF | Markdown; preview HTML a partir dos mesmos blocks do PDFKit *(2026-09-09)*
 - [x] Aviso suave ao exportar currículo quase vazio (sem nome / sem experiência) — evita PDF inútil e sensação de “o app não funciona” *(2026-09-09)*
 - [x] Feedback após download (toast / estado “PDF baixado” / “Markdown baixado”) *(2026-09-09)*
