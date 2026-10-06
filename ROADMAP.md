@@ -70,9 +70,9 @@ Sem conta na nuvem (ver [Conta na nuvem](#conta-na-nuvem--fora-do-escopo-ativo))
 
 ### 5. Qualidade da IA local (Chrome)
 
-- [ ] Continuar polindo prompts STAR (preservar conteúdo, aplicar sugestões sem inventar métricas)
-- [ ] Troubleshooting / onboarding mais claros para download do modelo e hardware mínimo
-- [ ] Não usar links `chrome://…` clicáveis na web (não abrem a partir da página) — instruir a colar na barra de endereço
+- [x] Continuar polindo prompts STAR (preservar conteúdo, aplicar sugestões sem inventar métricas) *(2026-10-06)*
+- [x] Troubleshooting / onboarding mais claros para download do modelo e hardware mínimo *(2026-10-06)*
+- [x] Não usar links `chrome://…` clicáveis na web (não abrem a partir da página) — instruir a colar na barra de endereço *(2026-10-06)*
 - [ ] Importar: reduzir fricção de PDF/DOCX (hoje só `.txt`/`.md` ou colar texto) — a maioria chega com PDF e abandona na barreira de “copie manualmente”
 - [ ] Avaliar eventos de analytics **só de produto** (ex.: abriu wizard) com disclosure explícito — sem texto do currículo (opcional; só se a privacidade continuar clara)
 
