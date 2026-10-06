@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Este foco ainda não está disponível. Use o foco Geral. Nichos e IA chegam em breve.",
+          "Foco não suportado. Use o foco Geral.",
       },
       { status: 400 }
     );
