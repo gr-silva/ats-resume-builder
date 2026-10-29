@@ -174,7 +174,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
 
   return (
     <>
-      <p className="mb-3 text-sm text-muted" aria-live="polite">
+      <p
+        className="mb-3 text-sm text-muted"
+        aria-live="polite"
+        data-tour="progress"
+      >
         Progresso{" "}
         <span className="font-medium text-foreground">
           {progress.doneCount}/{progress.total}
@@ -218,7 +222,7 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
         onValueChange={(value) => setTab(value as FormTabId)}
         className="w-full"
       >
-        <TabsList aria-label="Seções do currículo">
+        <TabsList aria-label="Seções do currículo" data-tour="form-tabs">
           {FORM_TAB_IDS.map((id) => {
             const status = progress.sections[id];
             return (
@@ -244,7 +248,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           })}
         </TabsList>
 
-        <TabsContent value="dados" className="space-y-4">
+        <TabsContent
+          value="dados"
+          className="space-y-4"
+          data-tour="tab-dados"
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Nome completo">
               <Input
@@ -299,7 +307,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           </div>
         </TabsContent>
 
-        <TabsContent value="resumo" className="space-y-4">
+        <TabsContent
+          value="resumo"
+          className="space-y-4"
+          data-tour="tab-resumo"
+        >
           <Field label="Resumo profissional">
             <Textarea
               className="min-h-[180px]"
@@ -314,7 +326,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           </p>
         </TabsContent>
 
-        <TabsContent value="skills" className="space-y-4">
+        <TabsContent
+          value="skills"
+          className="space-y-4"
+          data-tour="tab-skills"
+        >
           {data.skillCategories.map((cat, index) => (
             <div
               key={cat.id}
@@ -377,7 +393,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           </Button>
         </TabsContent>
 
-        <TabsContent value="experiencia" className="space-y-4">
+        <TabsContent
+          value="experiencia"
+          className="space-y-4"
+          data-tour="tab-experiencia"
+        >
           <details className="rounded-lg border border-border bg-background/60 px-3 py-2 text-xs text-muted">
             <summary className="cursor-pointer text-sm text-text-secondary">
               Como escrever um bom bullet
@@ -401,7 +421,10 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
                 <span className="text-sm font-medium text-text-secondary">
                   Experiência {expIndex + 1}
                 </span>
-                <div className="flex flex-wrap items-center gap-1">
+                <div
+                  className="flex flex-wrap items-center gap-1"
+                  data-tour={expIndex === 0 ? "exp-actions" : undefined}
+                >
                   {isSupported ? (
                     <Button
                       type="button"
@@ -412,6 +435,7 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
                       onClick={() =>
                         setStarReview({ expIndex, mode: "experience" })
                       }
+                      data-tour={expIndex === 0 ? "star-ai" : undefined}
                     >
                       <Sparkles className="size-4" /> Melhorar todos com IA
                     </Button>
@@ -597,7 +621,11 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           </Button>
         </TabsContent>
 
-        <TabsContent value="formacao" className="space-y-4">
+        <TabsContent
+          value="formacao"
+          className="space-y-4"
+          data-tour="tab-formacao"
+        >
           {data.education.map((edu, index) => (
             <div
               key={edu.id}
@@ -698,7 +726,7 @@ export function ResumeForm({ data, onChange, tab: tabProp, onTabChange }: Props)
           </Button>
         </TabsContent>
 
-        <TabsContent value="extra" className="space-y-6">
+        <TabsContent value="extra" className="space-y-6" data-tour="tab-extra">
           <div className="space-y-3">
             <Label>Cursos / certificações</Label>
             {data.courses.map((course, index) => (

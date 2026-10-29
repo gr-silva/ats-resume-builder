@@ -98,11 +98,12 @@ npm start
 
 ## Uso
 
-1. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra — em qualquer navegador.
-2. Baixe **MD** ou **PDF** (foco Geral). O rascunho é salvo automaticamente no navegador.
-3. (Opcional, Chrome) Use **Assistente IA** para acelerar o preenchimento ou **Importar** para colar um currículo existente.
-4. (Opcional, Chrome) Na aba Experiência, use **Revisar STAR** em cada bullet ou **Revisar STAR (todos)** no bloco da experiência.
-5. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
+1. Na primeira visita, o Passaru guia um tour pelos controles da página. Reabra em **Tour** no header.
+2. Preencha Dados, Resumo, Skills, Experiência (bullets STAR comprimidos), Formação e Extra — em qualquer navegador.
+3. Baixe **MD** ou **PDF** (foco Geral). O rascunho é salvo automaticamente no navegador.
+4. (Opcional, Chrome) Use **Assistente IA** para acelerar o preenchimento ou **Importar** para colar um currículo existente.
+5. (Opcional, Chrome) Na aba Experiência, use **Revisar STAR** em cada bullet ou **Revisar STAR (todos)** no bloco da experiência.
+6. Use **Carregar demo** para ver um exemplo fictício (Alex Rivera).
 
 ## Privacidade (MVP)
 

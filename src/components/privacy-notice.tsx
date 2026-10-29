@@ -6,6 +6,7 @@ export function PrivacyNotice() {
       role="note"
       aria-label="Aviso de privacidade"
       className="mb-8 rounded-xl border border-border bg-elevated/80 px-4 py-3 sm:px-5"
+      data-tour="privacy"
     >
       <div className="flex gap-3">
         <Shield

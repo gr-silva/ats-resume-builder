@@ -15,6 +15,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toast, type ToastMessage } from "@/components/ui/toast";
+import { GuidedTour } from "@/components/guided-tour/guided-tour";
 import { PrivacyNotice } from "@/components/privacy-notice";
 import { ResumeForm } from "@/components/resume-form";
 import { useResumeDraft } from "@/hooks/use-resume-draft";
@@ -27,7 +28,15 @@ import {
 } from "@/lib/resume/form-progress";
 import { isResumeTooEmpty } from "@/lib/resume/is-resume-too-empty";
 import type { ResumeData } from "@/lib/resume/schema";
-import { Download, Eraser, FileText, Play, Sparkles, Upload } from "lucide-react";
+import {
+  CircleHelp,
+  Download,
+  Eraser,
+  FileText,
+  Play,
+  Sparkles,
+  Upload,
+} from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 
 export function BuilderApp() {
@@ -54,6 +63,7 @@ function BuilderAppContent() {
   const [toast, setToast] = useState<ToastMessage | null>(null);
   const [toastDurationMs, setToastDurationMs] = useState(3000);
   const [formTab, setFormTab] = useState<FormTabId>("dados");
+  const [tourReplay, setTourReplay] = useState(0);
 
   const markdown = useMemo(() => buildMarkdown(data, "geral"), [data]);
 
@@ -215,12 +225,14 @@ function BuilderAppContent() {
           <span>rochaponto</span>
           <span className="text-accent">dev</span>
         </div>
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          Passou
-        </h1>
-        <p className="mt-3 text-base text-text-secondary">
-          Currículo que passa na triagem. Markdown e PDF, sem cadastro.
-        </p>
+        <div data-tour="hero">
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Passou
+          </h1>
+          <p className="mt-3 text-base text-text-secondary">
+            Currículo que passa na triagem. Markdown e PDF, sem cadastro.
+          </p>
+        </div>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <Badge className="border-accent/40 bg-accent/10 text-accent">
             Qualquer navegador
@@ -237,13 +249,14 @@ function BuilderAppContent() {
           </Badge>
         </div>
         <div className="mt-6 flex flex-wrap gap-2">
-          <Button type="button" onClick={startEditing}>
+          <Button type="button" onClick={startEditing} data-tour="start">
             Começar
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => setPendingDraftAction("demo")}
+            data-tour="demo"
           >
             <Play className="size-4" /> Carregar demo
           </Button>
@@ -255,8 +268,22 @@ function BuilderAppContent() {
             size="sm"
             className="text-muted hover:text-foreground"
             onClick={() => setPendingDraftAction("reset")}
+            data-tour="reset"
           >
             <Eraser className="size-3.5" /> Limpar
+          </Button>
+          <span aria-hidden className="select-none text-border">
+            ·
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="text-muted hover:text-foreground"
+            onClick={() => setTourReplay((n) => n + 1)}
+            data-tour="replay"
+          >
+            <CircleHelp className="size-3.5" /> Tour
           </Button>
           {isSupported ? (
             <>
@@ -271,6 +298,7 @@ function BuilderAppContent() {
                 disabled={checking}
                 title="Preencher com assistente IA"
                 onClick={() => setWizardOpen(true)}
+                data-tour="wizard"
               >
                 <Sparkles className="size-3.5" /> Assistente IA
               </Button>
@@ -285,12 +313,13 @@ function BuilderAppContent() {
                 disabled={checking}
                 title="Importar currículo com IA"
                 onClick={() => setImportOpen(true)}
+                data-tour="import"
               >
                 <Upload className="size-3.5" /> Importar
               </Button>
             </>
           ) : !checking ? (
-            <span className="px-2">
+            <span className="px-2" data-tour="ai-hint">
               IA local disponível no Chrome desktop.{" "}
               <a
                 href="#ai-setup"
@@ -320,10 +349,18 @@ function BuilderAppContent() {
         </section>
 
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-          <div className="rounded-xl border border-border bg-elevated/80 p-4 sm:p-6">
+          <div
+            className="rounded-xl border border-border bg-elevated/80 p-4 sm:p-6"
+            data-tour="preview"
+          >
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-lg font-medium">Preview</h2>
-              <div className="hidden flex-wrap gap-2 lg:flex">{exportButtons}</div>
+              <div
+                className="hidden flex-wrap gap-2 lg:flex"
+                data-tour="export-desktop"
+              >
+                {exportButtons}
+              </div>
             </div>
             <Separator className="mb-4" />
             {error ? (
@@ -364,11 +401,21 @@ function BuilderAppContent() {
       </div>
 
       <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-elevated/95 p-3 backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
+        <div
+          className="mx-auto flex max-w-6xl items-center justify-between gap-3"
+          data-tour="export-mobile"
+        >
           <p className="text-xs text-muted">Baixar currículo</p>
           <div className="flex gap-2">{exportButtons}</div>
         </div>
       </div>
+
+      <GuidedTour
+        checkingAi={checking}
+        aiSupported={isSupported}
+        replayToken={tourReplay}
+        onFormTab={setFormTab}
+      />
 
       {wizardOpen ? (
         <WizardDialog

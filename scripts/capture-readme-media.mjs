@@ -35,6 +35,15 @@ const GITHUB_README =
   "https://github.com/gr-silva/ats-resume-builder#readme";
 const SKIP_README_CAPTURE = process.env.SKIP_README_CAPTURE === "1";
 
+/** Keep in sync with `src/lib/tour/storage.ts`. Serialized into the browser. */
+function disableGuidedTour() {
+  try {
+    localStorage.setItem("ats-resume-builder:tour:v1", "1");
+  } catch {
+    /* private mode */
+  }
+}
+
 /** @type {{ label: string; slug: string }[]} */
 const FORM_TABS = [
   { label: "Dados", slug: "dados" },
@@ -395,6 +404,7 @@ async function captureAppVideo(browser, appUrl) {
       size: VIDEO_VIEWPORT,
     },
   });
+  await context.addInitScript(disableGuidedTour);
   const page = await context.newPage();
 
   await page.goto(appUrl, { waitUntil: "networkidle", timeout: 120_000 });
@@ -482,6 +492,7 @@ async function main() {
 
   const browser = await launchBrowser();
   const page = await browser.newPage();
+  await page.addInitScript(disableGuidedTour);
   const appUrl = await resolveAppUrl(page);
   console.log(`Using app URL: ${appUrl}`);
 
