@@ -51,6 +51,7 @@ Fricções que fazem o usuário desistir **antes** de exportar.
 - [x] Reordenar experiências / formação (subir/descer) *(2026-09-09)*
 - [x] Suavizar jargão STAR na UI — `<details>` com Situação → Tarefa → Ação → Resultado *(2026-09-09)*
 - [x] Defaults de skills neutros no foco Geral — Competências / Ferramentas / Outros *(2026-09-09)*
+- [x] Tour guiado de primeira visita (Passaru + Driver.js), cobrindo os controles da página, com replay no header *(2026-10-29)*
 
 ### 3. Nichos (Full Stack, IA, …)
 

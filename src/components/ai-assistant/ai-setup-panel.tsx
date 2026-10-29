@@ -28,6 +28,7 @@ export function AiSetupPanel() {
     <div
       id="ai-setup"
       className="rounded-xl border border-border bg-elevated/80 p-4"
+      data-tour="ai-setup"
     >
       <h3 className="mb-3 text-sm font-medium">IA opcional (Chrome)</h3>
       {!isSupported && !checking ? (

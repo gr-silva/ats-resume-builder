@@ -1,0 +1,103 @@
+.passou-tour-popover.driver-popover {
+  background-color: #111111;
+  color: #fafafa;
+  border: 1px solid #262626;
+  border-radius: 16px;
+  max-width: 340px;
+  min-width: 260px;
+  padding: 16px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.55);
+}
+
+.passou-tour-popover .driver-popover-arrow {
+  display: none;
+}
+
+.passou-tour-popover .driver-popover-title {
+  color: #fafafa;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  padding-right: 1.5rem;
+}
+
+.passou-tour-popover .driver-popover-description {
+  color: #d4d4d4;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.passou-tour-popover .driver-popover-progress-text {
+  color: #a3a3a3;
+  font-size: 0.75rem;
+}
+
+.passou-tour-popover .driver-popover-close-btn {
+  color: #737373;
+}
+
+.passou-tour-popover .driver-popover-close-btn:hover,
+.passou-tour-popover .driver-popover-close-btn:focus-visible {
+  color: #fafafa;
+}
+
+.passou-tour-popover .driver-popover-next-btn {
+  background-color: #ef4444;
+  color: #fafafa;
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 500;
+}
+
+.passou-tour-popover .driver-popover-next-btn:hover,
+.passou-tour-popover .driver-popover-next-btn:focus-visible {
+  background-color: rgb(239 68 68 / 0.9);
+}
+
+.passou-tour-popover .driver-popover-prev-btn {
+  background-color: transparent;
+  color: #d4d4d4;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.passou-tour-popover .driver-popover-prev-btn:hover,
+.passou-tour-popover .driver-popover-prev-btn:focus-visible {
+  background-color: #171717;
+  color: #fafafa;
+}
+
+.passou-tour-mascot {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 8px;
+}
+
+.passou-tour-mascot img {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.passou-tour-skip {
+  all: unset;
+  cursor: pointer;
+  color: #a3a3a3;
+  font-size: 0.75rem;
+  margin-right: auto;
+  padding: 4px 0;
+}
+
+.passou-tour-skip:hover,
+.passou-tour-skip:focus-visible {
+  color: #fafafa;
+  text-decoration: underline;
+}
+
+.passou-tour-popover .driver-popover-footer {
+  gap: 8px;
+}
